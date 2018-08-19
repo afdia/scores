@@ -111,6 +111,7 @@
       },
       methods: {
         onSubmit(event) {
+          event.preventDefault();
           var form = this.$data.form;
           let objCopy = Object.assign({}, form);
           let index = -1;
