@@ -8,7 +8,7 @@
         "sizes": "192x192"
       }
     ],
-    "start_url": "/scores",
+    "start_url": ".",
     "background_color": "#3367D6",
     "display": "browser",
     "theme_color": "#3367D6"

@@ -2,6 +2,7 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="index.css">
   <link rel="manifest" href="manifest.json">
   <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
   <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
@@ -20,7 +21,10 @@
           <b-form-input type="date" id="dateInput" v-model="game.date" required />
         </b-form-group>
         <b-form-group id="triumphTrackInputG" label="Triumph Track" label-for="triumphTrackInput">
-          <b-form-input id="triumphTrackInput" v-model="game.triumphTrack" required />
+          <b-form-select id="triumphTrackInput" v-model="game.triumphTrack" :options="triumphTracks" required />
+        </b-form-group>
+        <b-form-group v-if='game.triumphTrack === "Custom"' label="Triumph Parts">
+          <b-form-checkbox-group id="triumphPartsCheckboxes" v-model="game.triumphParts" :options="triumphParts" />
         </b-form-group>
         <b-form-group class="mt-5" id="nameInputG" label="Player Name" label-for="nameInput">
           <b-form-input id="nameInput" v-model="form.name" required />
@@ -85,7 +89,8 @@
           },
           factions: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
           boards: ['1 Industrial', '2 Engineering', '2A Militant', '3 Patriotic', '3A Innovative', '4 Mechanical', '5 Agricultural'],
-          triumphTracks: ['Default', 'Peace', 'War'],
+          triumphTracks: ['Default', 'Peace', 'War', 'Custom'],
+          triumphParts: ['Upgrades', 'Mechs', 'Buildings', 'Enlists', 'Workers', 'Objective', 'War1', 'War2', 'War3', 'War4', 'Popularity', 'Power', 'Combat Cards', 'Events', 'Factory Card', 'Resources'],
           fields: {
             name: { sortable: true },
             faction: { sortable: true },
@@ -101,6 +106,7 @@
           game: {
             date: new Date().toISOString().split('T')[0],
             triumphTrack: 'Default',
+            triumphParts: [],
             players: [],
           },
           exportJson: null,
