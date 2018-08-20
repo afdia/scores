@@ -31,19 +31,19 @@
         <label class="mr-1">Points </label>
         <b-form-row>
           <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Stars" v-model="form.stars" required/>
+            <b-form-input style="width: 6em" placeholder="Stars" v-model="form.stars" pattern="[0-9]*" inputmode="numeric" required/>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Tiles" v-model="form.tiles" required />
+            <b-form-input style="width: 6em" placeholder="Tiles" v-model="form.tiles" pattern="[0-9]*" inputmode="numeric" required />
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Resources" v-model="form.resources" required />
+            <b-form-input style="width: 6em" placeholder="Resources" v-model="form.resources" pattern="[0-9]*" inputmode="numeric" required />
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Buildings" v-model="form.buildings" required />
+            <b-form-input style="width: 6em" placeholder="Buildings" v-model="form.buildings" pattern="[0-9]*" inputmode="numeric" required />
           </b-col>
           <b-col>
-            <b-form-input style="width: 6em" placeholder="Coins" v-model="form.coins" required />
+            <b-form-input style="width: 6em" placeholder="Coins" v-model="form.coins" pattern="[0-9]*" inputmode="numeric" required />
           </b-col>
         </b-form-row>
         <div>Total: {{totalPoints(form)}}</div>
