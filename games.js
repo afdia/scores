@@ -1,0 +1,3 @@
+oldGames = [{"date":"2018-08-19","players":[{"name":"1","faction":"Fenris","board":"2A Militant","stars":"1","tiles":"1","resources":"1","buildings":"11","coins":"1"},{"name":"12","faction":"Fenris","board":"2A Militant","stars":"1","tiles":"1","resources":"1","buildings":"11","coins":"1"}]},
+        {"date":"2018-08-20","players":[{"name":"1","faction":"Fenris","board":"2A Militant","stars":"1","tiles":"1","resources":"1","buildings":"11","coins":"1"},{"name":"12","faction":"Fenris","board":"2A Militant","stars":"1","tiles":"1","resources":"1","buildings":"11","coins":"1"}]},
+        ];

@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
   <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
-
+  <script type="text/javascript" src="games.js"></script>
   <div id="app">
     <h1>Scythe Scores</h1>
     <div>
@@ -63,6 +63,8 @@
       </b-table>
     </div>
     <b-button @click="exportAsJson" variant="primary">Export Data</b-button>
+    <b-form-textarea v-if="exportJson !== null" id="exportAsJsonArea" v-model="exportJson" :rows="3">
+    </b-form-textarea>
   </div>
   <script>new Vue({
       el: '#app',
@@ -96,6 +98,7 @@
             date: new Date().toISOString().split('T')[0],
             players: [],
           },
+          exportJson: null,
         }
       },
       methods: {
@@ -103,6 +106,7 @@
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
         },
         onSubmit(event) {
+          // console.log(oldGames); TODO DO SOMETHING WITH OLD GAME DATA (NOT IN THIS METHOD)
           event.preventDefault();
           var form = this.$data.form;
           let objCopy = Object.assign({}, form);
@@ -128,7 +132,7 @@
           this.$data.form = objCopy;
         },
         exportAsJson() {
-          console.log(JSON.stringify(this.$data.game));
+          this.$data.exportJson = JSON.stringify(this.$data.game);
         }
       }
     })
