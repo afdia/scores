@@ -1,6 +1,8 @@
 <html>
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.json">
   <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
   <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
 </head>
@@ -14,8 +16,11 @@
     <h1>Scythe Scores</h1>
     <div>
       <b-form @submit="onSubmit">
-        <b-form-group id="nameInputG" label="Player" label-for="nameInput">
-          <b-form-input id="nameInput" v-model="form.player" required />
+        <b-form-group id="dateInputG" label="Date" label-for="dateInput">
+          <b-form-input class="mb-5" type="date" id="dateInput" v-model="game.date" required />
+        </b-form-group>
+        <b-form-group id="nameInputG" label="Player Name" label-for="nameInput">
+          <b-form-input id="nameInput" v-model="form.name" required />
         </b-form-group>
         <b-form-group id="factionInputG" label="Faction" label-for="factionInput">
           <b-form-select id="factionInput" v-model="form.faction" :options="factions" required />
@@ -29,41 +34,42 @@
             <b-form-input style="width: 6em" placeholder="Stars" v-model="form.stars" required/>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Tiles" v-model="form.tiles" />
+            <b-form-input style="width: 6em" placeholder="Tiles" v-model="form.tiles" required />
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Resources" v-model="form.resources" />
+            <b-form-input style="width: 6em" placeholder="Resources" v-model="form.resources" required />
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Buildings" v-model="form.buildings" />
+            <b-form-input style="width: 6em" placeholder="Buildings" v-model="form.buildings" required />
           </b-col>
           <b-col>
-            <b-form-input style="width: 6em" placeholder="Coins" v-model="form.coins" />
+            <b-form-input style="width: 6em" placeholder="Coins" v-model="form.coins" required />
           </b-col>
         </b-form-row>
-        <div>Total: {{ Number(form.stars) + Number(form.tiles) + Number(form.resources) + Number(form.buildings) + Number(form.coins)}}</div>
+        <div>Total: {{totalPoints(form)}}</div>
         <b-button type="submit" variant="primary">Submit</b-button>
       </b-form>
     </div>
     <div style="height: 3em"></div>
 
     <div id="table" class="table-editable">
-      <b-table striped hover :items="items" :fields="fields">
-          <template slot="total" slot-scope="data">
-            {{ Number(data.item.stars) + Number(data.item.tiles) + Number(data.item.resources) + Number(data.item.buildings) + Number(data.item.coins)}}
-          </template>
-          <template slot="edit" slot-scope="data">
-           <b-button @click="edit(data.index)" variant="primary">Edit</b-button>
-          </template>
+      <b-table striped hover :items="game.players" :fields="fields">
+        <template slot="total" slot-scope="data">
+          {{totalPoints(data.item)}}
+        </template>
+        <template slot="edit" slot-scope="data">
+          <b-button @click="edit(data.index)" variant="primary">Edit</b-button>
+        </template>
       </b-table>
     </div>
+    <b-button @click="exportAsJson" variant="primary">Export Data</b-button>
   </div>
   <script>new Vue({
       el: '#app',
       data() {
         return {
           form: {
-            player: null,
+            name: null,
             faction: "",
             board: "",
             stars: "",
@@ -75,55 +81,41 @@
           factions: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
           boards: ['1 Industrial', '2 Engineering', '2A Militant', '3 Patriotic', '3A Innovative', '4 Mechanical', '5 Agricultural'],
           fields: {
-            player: {
-              sortable: true
-            },
-            faction: {
-              sortable: true
-            },
-            board: {
-              sortable: true
-            },
-            stars: {
-              sortable: true
-            },
-            tiles: {
-              sortable: true
-            },
-            resources: {
-              sortable: true
-            },
-            buildings: {
-              sortable: true
-            },
-            coins: {
-              sortable: true
-            },
-            total: {
-              sortable: true
-            },
-            edit: {
-              sortable: false
-            },
+            name: { sortable: true },
+            faction: { sortable: true },
+            board: { sortable: true },
+            stars: { sortable: true },
+            tiles: { sortable: true },
+            resources: { sortable: true },
+            buildings: { sortable: true },
+            coins: { sortable: true },
+            total: { sortable: true },
+            edit: { sortable: true },
           },
-          items: []
+          game: {
+            date: new Date().toISOString().split('T')[0],
+            players: [],
+          },
         }
       },
       methods: {
+        totalPoints(player) {
+          return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
+        },
         onSubmit(event) {
           event.preventDefault();
           var form = this.$data.form;
           let objCopy = Object.assign({}, form);
           let index = -1;
-          this.$data.items.forEach((value, i) => {
-            if (value.player === objCopy.player) {
+          this.$data.game.players.forEach((value, i) => {
+            if (value.name === objCopy.name) {
               index = i;
             }
           })
           if (index !== -1) {
-            this.$data.items[index] = objCopy; // index replacement funktioniert nicht in tabelle
+            Vue.set(this.$data.game.players, index, objCopy)
           } else {
-          this.$data.items.push(objCopy)
+            this.$data.game.players.push(objCopy)
           }
           Object.keys(form).forEach(function (k) {
             form[k] = "";
@@ -131,13 +123,16 @@
         },
         edit(index) {
           console.log("hello " + index)
-          var item = this.$data.items[index];
+          var item = this.$data.game.players[index];
           let objCopy = Object.assign({}, item);
           this.$data.form = objCopy;
+        },
+        exportAsJson() {
+          console.log(JSON.stringify(this.$data.game));
         }
       }
     })
   </script>
 </body>
 
-</html>>
+</html>
