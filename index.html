@@ -17,9 +17,12 @@
     <div>
       <b-form @submit="onSubmit">
         <b-form-group id="dateInputG" label="Date" label-for="dateInput">
-          <b-form-input class="mb-5" type="date" id="dateInput" v-model="game.date" required />
+          <b-form-input type="date" id="dateInput" v-model="game.date" required />
         </b-form-group>
-        <b-form-group id="nameInputG" label="Player Name" label-for="nameInput">
+        <b-form-group id="triumphTrackInputG" label="Triumph Track" label-for="triumphTrackInput">
+          <b-form-input id="triumphTrackInput" v-model="game.triumphTrack" required />
+        </b-form-group>
+        <b-form-group class="mt-5" id="nameInputG" label="Player Name" label-for="nameInput">
           <b-form-input id="nameInput" v-model="form.name" required />
         </b-form-group>
         <b-form-group id="factionInputG" label="Faction" label-for="factionInput">
@@ -82,6 +85,7 @@
           },
           factions: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
           boards: ['1 Industrial', '2 Engineering', '2A Militant', '3 Patriotic', '3A Innovative', '4 Mechanical', '5 Agricultural'],
+          triumphTracks: ['Default', 'Peace', 'War'],
           fields: {
             name: { sortable: true },
             faction: { sortable: true },
@@ -96,6 +100,7 @@
           },
           game: {
             date: new Date().toISOString().split('T')[0],
+            triumphTrack: 'Default',
             players: [],
           },
           exportJson: null,
