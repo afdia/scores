@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
 </head>
 
-<body class="mx-5">
+<body class="mx-2">
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
   <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
@@ -35,7 +35,7 @@
         <b-form-group id="boardInputG" label="Board" label-for="boardInput">
           <b-form-select id="boardInput" v-model="form.board" :options="boards" required />
         </b-form-group>
-        <label class="mr-1">Points </label>
+        <label>Points </label>
         <b-form-row>
             <b-col style="flex-grow: initial">
                 <b-input-group prepend="Stars" style="width: 6em">
