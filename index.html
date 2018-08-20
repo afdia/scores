@@ -8,7 +8,7 @@
   <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
 </head>
 
-<body>
+<body class="mx-5">
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
   <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
@@ -37,21 +37,31 @@
         </b-form-group>
         <label class="mr-1">Points </label>
         <b-form-row>
-          <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Stars" v-model="form.stars" pattern="[0-9]*" inputmode="numeric" required/>
-          </b-col>
-          <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Tiles" v-model="form.tiles" pattern="[0-9]*" inputmode="numeric" required />
-          </b-col>
-          <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Resources" v-model="form.resources" pattern="[0-9]*" inputmode="numeric" required />
-          </b-col>
-          <b-col style="flex-grow: initial">
-            <b-form-input style="width: 6em" placeholder="Buildings" v-model="form.buildings" pattern="[0-9]*" inputmode="numeric" required />
-          </b-col>
-          <b-col>
-            <b-form-input style="width: 6em" placeholder="Coins" v-model="form.coins" pattern="[0-9]*" inputmode="numeric" required />
-          </b-col>
+            <b-col style="flex-grow: initial">
+                <b-input-group prepend="Stars" style="width: 6em">
+                  <b-form-input @focus.native="$event.target.select()" v-model="form.stars" pattern="[0-9]*" inputmode="numeric" required />
+                </b-input-group>
+              </b-col>
+              <b-col style="flex-grow: initial">
+                <b-input-group prepend="Tiles" style="width: 6em">
+                  <b-form-input @focus.native="$event.target.select()" v-model="form.tiles" pattern="[0-9]*" inputmode="numeric" required />
+                </b-input-group>
+              </b-col>
+              <b-col style="flex-grow: initial">
+                <b-input-group prepend="Resources" style="width: 8.5em">
+                  <b-form-input @focus.native="$event.target.select()" v-model="form.resources" pattern="[0-9]*" inputmode="numeric" required />
+                </b-input-group>
+              </b-col>
+              <b-col style="flex-grow: initial">
+                <b-input-group prepend="Buildings" style="width: 8em">
+                  <b-form-input @focus.native="$event.target.select()" v-model="form.buildings" pattern="[0-9]*" inputmode="numeric" required />
+                </b-input-group>
+              </b-col>
+              <b-col>
+                <b-input-group prepend="Coins" style="width: 7em">
+                  <b-form-input @focus.native="$event.target.select()" v-model="form.coins" pattern="[0-9]*" inputmode="numeric" required />
+                </b-input-group>
+              </b-col>
         </b-form-row>
         <div>Total: {{totalPoints(form)}}</div>
         <b-button type="submit" variant="primary">Submit</b-button>
@@ -81,11 +91,11 @@
             name: null,
             faction: "",
             board: "",
-            stars: "",
-            tiles: "",
-            resources: "",
-            buildings: "",
-            coins: "",
+            stars: "0",
+            tiles: "0",
+            resources: "0",
+            buildings: "0",
+            coins: "0",
           },
           factions: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
           boards: ['1 Industrial', '2 Engineering', '2A Militant', '3 Patriotic', '3A Innovative', '4 Mechanical', '5 Agricultural'],
@@ -143,6 +153,9 @@
           this.$data.form = objCopy;
         },
         exportAsJson() {
+          if (this.$data.game.triumphTrack !== 'Custom') {
+            this.$data.game.triumphParts = [];
+          }
           this.$data.exportJson = JSON.stringify(this.$data.game);
         }
       }
