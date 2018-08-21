@@ -6,12 +6,14 @@
   <link rel="manifest" href="manifest.json">
   <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
   <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+  <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
 </head>
 
 <body class="mx-2">
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
   <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
   <script type="text/javascript" src="games.js"></script>
   <div id="app">
     <h1 style="text-align: center">Scythe Scores</h1>
@@ -28,28 +30,28 @@
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Triumph Track</div>
           </b-input-group-text>
-          <b-form-select v-model="game.triumphTrack" :options="triumphTracks" />
+          <b-form-select v-model="game.triumphTrack" :options="options.triumphTrack" />
         </b-input-group>
         <b-form-group v-if='game.triumphTrack === "Custom"'>
-          <b-form-checkbox-group id="triumphPartsCheckboxes" v-model="game.triumphParts" :options="triumphParts" />
+          <b-form-checkbox-group id="triumphPartsCheckboxes" v-model="game.triumphParts" :options="optionstriumphPart" />
         </b-form-group>
         <b-input-group class="my-2">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Resolution Tile</div>
           </b-input-group-text>
-          <b-form-select v-model="game.resolutionTile" :options="resolutionTiles" />
+          <b-form-select v-model="game.resolutionTile" :options="options.resolutionTile" />
         </b-input-group>
         <b-input-group class="my-2">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Airship (Red)</div>
           </b-input-group-text>
-          <b-form-select v-model="game.airshipRed" :options="airshipTileReds" />
+          <b-form-select v-model="game.airshipRed" :options="options.airshipTileRed" />
         </b-input-group>
         <b-input-group class="my-2">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Airship (Green)</div>
           </b-input-group-text>
-          <b-form-select v-model="game.airshipGreen" :options="airshipTileGreens" />
+          <b-form-select v-model="game.airshipGreen" :options="options.airshipTileGreen" />
         </b-input-group>
         <h2>Player</h2>
         <b-input-group class="my-2">
@@ -62,13 +64,13 @@
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Faction</div>
           </b-input-group-text>
-          <b-form-select v-model="form.faction" :options="factions" required />
+          <b-form-select v-model="form.faction" :options="options.faction" required />
         </b-input-group>
         <b-input-group class="my-2">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Board</div>
           </b-input-group-text>
-          <b-form-select v-model="form.board" :options="boards" required />
+          <b-form-select v-model="form.board" :options="options.board" required />
         </b-input-group>
         <b-input-group class="my-2">
         <b-input-group-text slot="prepend">
@@ -113,15 +115,28 @@
         <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
       </b-form>
     </div>
-    <b-table class="mt-5" striped hover :items="game.players" :fields="fields">
+    <b-table class="mt-5" striped hover caption-top :items="game.players" :fields="fields">
       <template slot="points" slot-scope="data">{{totalPoints(data.item)}}</template>
       <template slot="edit" slot-scope="data">
         <b-button @click.native.stop @click="edit(data.index)" variant="primary">Edit</b-button>
+      </template>
+      <template slot="table-caption">
+        <b>Date:</b> {{game.date}}, <b>Triumph Track:</b> {{game.triumphTrack}}, <b>Resolution:</b> {{game.resolutionTile}}, <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}
       </template>
     </b-table>
     <b-button @click="exportAsJson" variant="primary">Export Data</b-button>
     <b-form-textarea v-if="exportJson !== null" id="exportAsJsonArea" v-model="exportJson" :rows="3">
     </b-form-textarea>
+    <b-form-textarea v-if="exportJson !== null" id="exportAsJsonArea" v-model="exportJson" :rows="3">
+    </b-form-textarea>
+    <b-button @click="showOldGames" variant="warning">Show old games</b-button>
+    <b-table v-for="game in oldGames" v-if="showOld" class="mt-5" striped hover caption-top :items="game.players" :fields="fields">
+      <template slot="points" slot-scope="data">{{totalPoints(data.item)}}</template>
+      <template slot="table-caption">
+        <b>Date:</b> {{game.date}}, <b>Triumph Track:</b> {{game.triumphTrack}}, <b>Resolution:</b> {{game.resolutionTile}}, <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}
+      </template>
+    </b-table>
+    <div v-if="showOld" style="margin-top:5em" class="ct-chart ct-perfect-fourth"></div>
   </div>
   <script>new Vue({
       el: '#app',
@@ -138,14 +153,14 @@
             buildings: "0",
             coins: "0",
           },
-          factions: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
-          boards: ['1 Industrial', '2 Engineering', '2A Militant', '3 Patriotic', '3A Innovative', '4 Mechanical', '5 Agricultural'],
-          triumphTracks: ['Default', 'Peace', 'War', 'Custom'],
-          triumphParts: ['Upgrades', 'Mechs', 'Buildings', 'Enlists', 'Workers', 'Objective', 'War1', 'War2', 'War3', 'War4', 'Popularity', 'Power', 'Combat Cards', 'Encounters', 'Factory Card', 'Resources'],
-          resolutionTiles: ['', '1 Land Rush', '2 Factory Explosion', '3 Spoils of War', '4 King of the Hill', '5 Deja Vu', '6 Mission Possible', '7 Doomsday Clock', '8 Backup Plan'],
-          airshipTileReds: ['', '1 Bombard', '2 Bounty', '3 Siege Engine', '4 Distract', '5 Espionage', '6 Blitzkrieg', '7 Toll', '8 War Correspondent'],
-          airshipTileGreens: ['', '9 Ferry', '10 Boost', '11 Drill', '12 Hero', '13 Safe Haven', '14 Reap', '15 Craft', '16 Negotiate'],
-          options: {
+         options: {
+            faction: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
+            board: ['1 Industrial', '2 Engineering', '2A Militant', '3 Patriotic', '3A Innovative', '4 Mechanical', '5 Agricultural'],
+            triumphTrack: ['Default', 'Peace', 'War', 'Custom'],
+            triumphPart: ['Upgrades', 'Mechs', 'Buildings', 'Enlists', 'Workers', 'Objective', 'War1', 'War2', 'War3', 'War4', 'Popularity', 'Power', 'Combat Cards', 'Encounters', 'Factory Card', 'Resources'],
+            resolutionTile: ['None', '1 Land Rush', '2 Factory Explosion', '3 Spoils of War', '4 King of the Hill', '5 Deja Vu', '6 Mission Possible', '7 Doomsday Clock', '8 Backup Plan'],
+            airshipTileRed: ['None', '1 Bombard', '2 Bounty', '3 Siege Engine', '4 Distract', '5 Espionage', '6 Blitzkrieg', '7 Toll', '8 War Correspondent'],
+            airshipTileGreen: ['None', '9 Ferry', '10 Boost', '11 Drill', '12 Hero', '13 Safe Haven', '14 Reap', '15 Craft', '16 Negotiate'],
             popularity: ['Min', 'Medium', 'Max'],
           },
           fields: {
@@ -163,12 +178,14 @@
             date: new Date().toISOString().split('T')[0],
             triumphTrack: 'Default',
             triumphParts: '',
-            resolutionTile: '',
-            airshipRed: '',
-            airshipGreen: '',
+            resolutionTile: 'None',
+            airshipRed: 'None',
+            airshipGreen: 'None',
             players: [],
           },
           exportJson: null,
+          showOld: false,
+          oldGames: [],
         }
       },
       methods: {
@@ -176,20 +193,19 @@
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
         },
         onSubmit(event) {
-          // console.log(oldGames); TODO DO SOMETHING WITH OLD GAME DATA (NOT IN THIS METHOD)
           event.preventDefault();
-          var form = this.$data.form;
+          var form = this.form;
           let objCopy = Object.assign({}, form);
           let index = -1;
-          this.$data.game.players.forEach((value, i) => {
+          this.game.players.forEach((value, i) => {
             if (value.name === objCopy.name) {
               index = i;
             }
           })
           if (index !== -1) {
-            Vue.set(this.$data.game.players, index, objCopy)
+            Vue.set(this.game.players, index, objCopy)
           } else {
-            this.$data.game.players.push(objCopy)
+            this.game.players.push(objCopy)
           }
           Object.keys(form).forEach(function (k) {
             form[k] = "";
@@ -197,15 +213,37 @@
         },
         edit(index) {
           console.log("hello " + index)
-          var item = this.$data.game.players[index];
+          var item = this.game.players[index];
           let objCopy = Object.assign({}, item);
-          this.$data.form = objCopy;
+          this.form = objCopy;
         },
         exportAsJson() {
-          if (this.$data.game.triumphTrack !== 'Custom') {
-            this.$data.game.triumphParts = [];
+          if (this.game.triumphTrack !== 'Custom') {
+            this.game.triumphParts = [];
           }
-          this.$data.exportJson = JSON.stringify(this.$data.game);
+          this.exportJson = JSON.stringify(this.game);
+        },
+        showOldGames() {
+          this.showOld=true;
+          this.oldGames = games;
+
+          // see https://gionkunz.github.io/chartist-js/api-documentation.html
+          new Chartist.Bar('.ct-chart', {
+            labels: this.options.faction,
+            series: [
+              [5, 4, 3, 7, 5, 10, 3],
+              [3, 2, 9, 5, 4, 6, 4]
+            ]
+          }, {
+            axisX: {
+              // On the x-axis start means top and end means bottom
+              position: 'start'
+            },
+            axisY: {
+              // On the y-axis start means left and end means right
+              position: 'end'
+            }
+          });
         }
       }
     })
