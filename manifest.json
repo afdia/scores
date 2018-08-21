@@ -3,9 +3,9 @@
     "name": "Scores",
     "icons": [
       {
-        "src": "/icons-192.png",
+        "src": "./icons-192.png",
         "type": "image/png",
-        "sizes": "192x192"
+        "sizes": "48x48 72x72 96x96 128x128 192x192 256x256"
       }
     ],
     "start_url": ".",
