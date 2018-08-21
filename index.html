@@ -5,28 +5,39 @@
   <link rel="stylesheet" type="text/css" href="index.css">
   <link rel="manifest" href="manifest.json">
   <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css" />
+  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
 </head>
 
 <body class="mx-2">
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-  <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
   <script type="text/javascript" src="games.js"></script>
   <div id="app">
     <h1>Scythe Scores</h1>
     <div>
       <b-form @submit="onSubmit">
+        <h2>Game Settings</h2>
         <b-form-group id="dateInputG" label="Date" label-for="dateInput">
           <b-form-input type="date" id="dateInput" v-model="game.date" required />
         </b-form-group>
         <b-form-group id="triumphTrackInputG" label="Triumph Track" label-for="triumphTrackInput">
           <b-form-select id="triumphTrackInput" v-model="game.triumphTrack" :options="triumphTracks" required />
         </b-form-group>
-        <b-form-group v-if='game.triumphTrack === "Custom"' label="Triumph Parts">
+        <b-form-group v-if='game.triumphTrack === "Custom"'>
           <b-form-checkbox-group id="triumphPartsCheckboxes" v-model="game.triumphParts" :options="triumphParts" />
         </b-form-group>
-        <b-form-group class="mt-5" id="nameInputG" label="Player Name" label-for="nameInput">
+        <b-form-group id="resolutionTileInputG" label="Resolution Tile" label-for="resolutionTileInput">
+          <b-form-select id="resolutionTileInput" v-model="game.resolutionTile" :options="resolutionTiles" />
+        </b-form-group>
+        <b-form-group id="airshipTileRedInputG" label="Airship (Red)" label-for="airshipTileRedInput">
+          <b-form-select id="airshipTileRedInput" v-model="game.airshipRed" :options="airshipTileReds" />
+        </b-form-group>
+        <b-form-group id="airshipTileGreenInputG" label="Airship (Green)" label-for="airshipTileGreenInput">
+          <b-form-select id="airshipTileGreenInput" v-model="game.airshipGreen" :options="airshipTileGreens" />
+        </b-form-group>
+        <h2 class="mt-2">Player</h2>
+        <b-form-group id="nameInputG" label="Name" label-for="nameInput">
           <b-form-input id="nameInput" v-model="form.name" required />
         </b-form-group>
         <b-form-group id="factionInputG" label="Faction" label-for="factionInput">
@@ -100,7 +111,10 @@
           factions: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
           boards: ['1 Industrial', '2 Engineering', '2A Militant', '3 Patriotic', '3A Innovative', '4 Mechanical', '5 Agricultural'],
           triumphTracks: ['Default', 'Peace', 'War', 'Custom'],
-          triumphParts: ['Upgrades', 'Mechs', 'Buildings', 'Enlists', 'Workers', 'Objective', 'War1', 'War2', 'War3', 'War4', 'Popularity', 'Power', 'Combat Cards', 'Events', 'Factory Card', 'Resources'],
+          triumphParts: ['Upgrades', 'Mechs', 'Buildings', 'Enlists', 'Workers', 'Objective', 'War1', 'War2', 'War3', 'War4', 'Popularity', 'Power', 'Combat Cards', 'Encounters', 'Factory Card', 'Resources'],
+          resolutionTiles: ['', '1 Land Rush', '2 Factory Explosion', '3 Spoils of War', '4 King of the Hill', '5 Deja Vu', '6 Mission Possible', '7 Doomsday Clock', '8 Backup Plan'],
+          airshipTileReds: ['', '1 Bombard', '2 Bounty', '3 Siege Engine', '4 Distract', '5 Espionage', '6 Blitzkrieg', '7 Toll', '8 War Correspondent'],
+          airshipTileGreens: ['', '9 Ferry', '10 Boost', '11 Drill', '12 Hero', '13 Safe Haven', '14 Reap', '15 Craft', '16 Negotiate'],
           fields: {
             name: { sortable: true },
             faction: { sortable: true },
@@ -116,7 +130,10 @@
           game: {
             date: new Date().toISOString().split('T')[0],
             triumphTrack: 'Default',
-            triumphParts: [],
+            triumphParts: '',
+            resolutionTile: '',
+            airshipRed: '',
+            airshipGreen: '',
             players: [],
           },
           exportJson: null,
