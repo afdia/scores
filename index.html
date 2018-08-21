@@ -14,10 +14,10 @@
   <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
   <script type="text/javascript" src="games.js"></script>
   <div id="app">
-    <h1>Scythe Scores</h1>
+    <h1 style="text-align: center">Scythe Scores</h1>
     <div>
       <b-form @submit="onSubmit">
-        <h2>Game Settings</h2>
+        <h2>Game</h2>
         <b-form-group id="dateInputG" label="Date" label-for="dateInput">
           <b-form-input type="date" id="dateInput" v-model="game.date" required />
         </b-form-group>
@@ -46,50 +46,49 @@
         <b-form-group id="boardInputG" label="Board" label-for="boardInput">
           <b-form-select id="boardInput" v-model="form.board" :options="boards" required />
         </b-form-group>
-        <label>Points </label>
         <b-form-row>
             <b-col style="flex-grow: initial">
-                <b-input-group prepend="Stars" style="width: 6em">
+                <b-input-group prepend="Stars" style="width: 6.5em">
                   <b-form-input @focus.native="$event.target.select()" v-model="form.stars" pattern="[0-9]*" inputmode="numeric" required />
                 </b-input-group>
               </b-col>
               <b-col style="flex-grow: initial">
-                <b-input-group prepend="Tiles" style="width: 6em">
-                  <b-form-input @focus.native="$event.target.select()" v-model="form.tiles" pattern="[0-9]*" inputmode="numeric" required />
+                <b-input-group prepend="Tiles" style="width: 6.2em">
+                  <b-form-input style="text-align: center" @focus.native="$event.target.select()" v-model="form.tiles" pattern="[0-9]*" inputmode="numeric" required />
                 </b-input-group>
               </b-col>
               <b-col style="flex-grow: initial">
-                <b-input-group prepend="Resources" style="width: 8.5em">
-                  <b-form-input @focus.native="$event.target.select()" v-model="form.resources" pattern="[0-9]*" inputmode="numeric" required />
+                <b-input-group prepend="Resources" style="width: 8.7em">
+                  <b-form-input style="text-align: center" @focus.native="$event.target.select()" v-model="form.resources" pattern="[0-9]*" inputmode="numeric" required />
                 </b-input-group>
               </b-col>
               <b-col style="flex-grow: initial">
-                <b-input-group prepend="Buildings" style="width: 8em">
-                  <b-form-input @focus.native="$event.target.select()" v-model="form.buildings" pattern="[0-9]*" inputmode="numeric" required />
+                <b-input-group prepend="Buildings" style="width: 8.3em">
+                  <b-form-input style="text-align: center" @focus.native="$event.target.select()" v-model="form.buildings" pattern="[0-9]*" inputmode="numeric" required />
                 </b-input-group>
               </b-col>
-              <b-col>
-                <b-input-group prepend="Coins" style="width: 7em">
-                  <b-form-input @focus.native="$event.target.select()" v-model="form.coins" pattern="[0-9]*" inputmode="numeric" required />
+              <b-col style="flex-grow: initial">
+                <b-input-group prepend="Coins" style="width: 6.8em">
+                  <b-form-input style="text-align: center" @focus.native="$event.target.select()" v-model="form.coins" pattern="[0-9]*" inputmode="numeric" required />
+                </b-input-group>
+              </b-col>
+              <b-col style="flex-grow: initial">
+                <b-input-group prepend="Sum" style="width: 7em">
+                  <b-form-input class="btn-success" disabled style="text-align: center" :value="totalPoints(form)"/>
                 </b-input-group>
               </b-col>
         </b-form-row>
-        <div>Total: {{totalPoints(form)}}</div>
-        <b-button type="submit" variant="primary">Submit</b-button>
+        <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
       </b-form>
     </div>
-    <div style="height: 3em"></div>
-
-    <div id="table" class="table-editable">
-      <b-table striped hover :items="game.players" :fields="fields">
-        <template slot="total" slot-scope="data">
-          {{totalPoints(data.item)}}
-        </template>
-        <template slot="edit" slot-scope="data">
-          <b-button @click="edit(data.index)" variant="primary">Edit</b-button>
-        </template>
-      </b-table>
-    </div>
+    <b-table class="mt-5" striped hover :items="game.players" :fields="fields">
+      <template slot="points" slot-scope="data">
+        {{totalPoints(data.item)}}
+      </template>
+      <template slot="edit" slot-scope="data">
+        <b-button @click.native.stop @click="edit(data.index)" variant="primary">Edit</b-button>
+      </template>
+    </b-table>
     <b-button @click="exportAsJson" variant="primary">Export Data</b-button>
     <b-form-textarea v-if="exportJson !== null" id="exportAsJsonArea" v-model="exportJson" :rows="3">
     </b-form-textarea>
@@ -116,16 +115,15 @@
           airshipTileReds: ['', '1 Bombard', '2 Bounty', '3 Siege Engine', '4 Distract', '5 Espionage', '6 Blitzkrieg', '7 Toll', '8 War Correspondent'],
           airshipTileGreens: ['', '9 Ferry', '10 Boost', '11 Drill', '12 Hero', '13 Safe Haven', '14 Reap', '15 Craft', '16 Negotiate'],
           fields: {
-            name: { sortable: true },
-            faction: { sortable: true },
-            board: { sortable: true },
-            stars: { sortable: true },
-            tiles: { sortable: true },
-            resources: { sortable: true },
-            buildings: { sortable: true },
-            coins: { sortable: true },
-            total: { sortable: true },
-            edit: { sortable: true },
+            name: { sortable: false },
+            faction: { sortable: false },
+            board: { sortable: false },
+            points: { sortable: false },
+            edit: {
+              label: '',
+              'class': 'button-col',
+              sortable: false
+            },
           },
           game: {
             date: new Date().toISOString().split('T')[0],
