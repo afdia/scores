@@ -18,73 +18,103 @@
     <div>
       <b-form @submit="onSubmit">
         <h2>Game</h2>
-        <b-form-group id="dateInputG" label="Date" label-for="dateInput">
-          <b-form-input type="date" id="dateInput" v-model="game.date" required />
-        </b-form-group>
-        <b-form-group id="triumphTrackInputG" label="Triumph Track" label-for="triumphTrackInput">
-          <b-form-select id="triumphTrackInput" v-model="game.triumphTrack" :options="triumphTracks" required />
-        </b-form-group>
+        <b-input-group class="my-2">
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Date</div>
+          </b-input-group-text>
+          <b-form-input type="date" v-model="game.date" />
+        </b-input-group>
+        <b-input-group class="my-2">
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Triumph Track</div>
+          </b-input-group-text>
+          <b-form-select v-model="game.triumphTrack" :options="triumphTracks" />
+        </b-input-group>
         <b-form-group v-if='game.triumphTrack === "Custom"'>
           <b-form-checkbox-group id="triumphPartsCheckboxes" v-model="game.triumphParts" :options="triumphParts" />
         </b-form-group>
-        <b-form-group id="resolutionTileInputG" label="Resolution Tile" label-for="resolutionTileInput">
-          <b-form-select id="resolutionTileInput" v-model="game.resolutionTile" :options="resolutionTiles" />
-        </b-form-group>
-        <b-form-group id="airshipTileRedInputG" label="Airship (Red)" label-for="airshipTileRedInput">
-          <b-form-select id="airshipTileRedInput" v-model="game.airshipRed" :options="airshipTileReds" />
-        </b-form-group>
-        <b-form-group id="airshipTileGreenInputG" label="Airship (Green)" label-for="airshipTileGreenInput">
-          <b-form-select id="airshipTileGreenInput" v-model="game.airshipGreen" :options="airshipTileGreens" />
-        </b-form-group>
-        <h2 class="mt-2">Player</h2>
-        <b-form-group id="nameInputG" label="Name" label-for="nameInput">
-          <b-form-input id="nameInput" v-model="form.name" required />
-        </b-form-group>
-        <b-form-group id="factionInputG" label="Faction" label-for="factionInput">
-          <b-form-select id="factionInput" v-model="form.faction" :options="factions" required />
-        </b-form-group>
-        <b-form-group id="boardInputG" label="Board" label-for="boardInput">
-          <b-form-select id="boardInput" v-model="form.board" :options="boards" required />
-        </b-form-group>
+        <b-input-group class="my-2">
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Resolution Tile</div>
+          </b-input-group-text>
+          <b-form-select v-model="game.resolutionTile" :options="resolutionTiles" />
+        </b-input-group>
+        <b-input-group class="my-2">
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Airship (Red)</div>
+          </b-input-group-text>
+          <b-form-select v-model="game.airshipRed" :options="airshipTileReds" />
+        </b-input-group>
+        <b-input-group class="my-2">
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Airship (Green)</div>
+          </b-input-group-text>
+          <b-form-select v-model="game.airshipGreen" :options="airshipTileGreens" />
+        </b-input-group>
+        <h2>Player</h2>
+        <b-input-group class="my-2">
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Name</div>
+          </b-input-group-text>
+          <b-form-input v-model="form.name" required />
+        </b-input-group>
+        <b-input-group class="my-2">
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Faction</div>
+          </b-input-group-text>
+          <b-form-select v-model="form.faction" :options="factions" required />
+        </b-input-group>
+        <b-input-group class="my-2">
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Board</div>
+          </b-input-group-text>
+          <b-form-select v-model="form.board" :options="boards" required />
+        </b-input-group>
+        <b-input-group class="my-2">
+        <b-input-group-text slot="prepend">
+          <div class="leftLabel">Popularity</div>
+        </b-input-group-text>
+        <b-form-select v-model="form.popularity" :options="options.popularity" required />
+        </b-input-group>
+        <h2>Points</h2>
         <b-form-row>
-            <b-col style="flex-grow: initial">
-                <b-input-group prepend="Stars" style="width: 6.5em">
-                  <b-form-input @focus.native="$event.target.select()" v-model="form.stars" pattern="[0-9]*" inputmode="numeric" required />
-                </b-input-group>
-              </b-col>
-              <b-col style="flex-grow: initial">
-                <b-input-group prepend="Tiles" style="width: 6.2em">
-                  <b-form-input style="text-align: center" @focus.native="$event.target.select()" v-model="form.tiles" pattern="[0-9]*" inputmode="numeric" required />
-                </b-input-group>
-              </b-col>
-              <b-col style="flex-grow: initial">
-                <b-input-group prepend="Resources" style="width: 8.7em">
-                  <b-form-input style="text-align: center" @focus.native="$event.target.select()" v-model="form.resources" pattern="[0-9]*" inputmode="numeric" required />
-                </b-input-group>
-              </b-col>
-              <b-col style="flex-grow: initial">
-                <b-input-group prepend="Buildings" style="width: 8.3em">
-                  <b-form-input style="text-align: center" @focus.native="$event.target.select()" v-model="form.buildings" pattern="[0-9]*" inputmode="numeric" required />
-                </b-input-group>
-              </b-col>
-              <b-col style="flex-grow: initial">
-                <b-input-group prepend="Coins" style="width: 6.8em">
-                  <b-form-input style="text-align: center" @focus.native="$event.target.select()" v-model="form.coins" pattern="[0-9]*" inputmode="numeric" required />
-                </b-input-group>
-              </b-col>
-              <b-col style="flex-grow: initial">
-                <b-input-group prepend="Sum" style="width: 7em">
-                  <b-form-input class="btn-success" disabled style="text-align: center" :value="totalPoints(form)"/>
-                </b-input-group>
-              </b-col>
+          <b-col style="flex-grow: initial">
+            <b-input-group prepend="Stars" style="width: 6.5em">
+              <b-form-input style="text-align: center" v-model="form.stars" pattern="[0-9]*" inputmode="numeric" required />
+            </b-input-group>
+          </b-col>
+          <b-col style="flex-grow: initial">
+            <b-input-group prepend="Tiles" style="width: 6.2em">
+              <b-form-input style="text-align: center" v-model="form.tiles" pattern="[0-9]*" inputmode="numeric"
+                required />
+            </b-input-group>
+          </b-col>
+          <b-col style="flex-grow: initial">
+            <b-input-group prepend="Resources" style="width: 8.7em">
+              <b-form-input style="text-align: center" v-model="form.resources" pattern="[0-9]*" inputmode="numeric" required />
+            </b-input-group>
+          </b-col>
+          <b-col style="flex-grow: initial">
+            <b-input-group prepend="Buildings" style="width: 8.3em">
+              <b-form-input style="text-align: center" v-model="form.buildings" pattern="[0-9]*" inputmode="numeric" required />
+            </b-input-group>
+          </b-col>
+          <b-col style="flex-grow: initial">
+            <b-input-group prepend="Coins" style="width: 6.8em">
+              <b-form-input style="text-align: center" v-model="form.coins" pattern="[0-9]*" inputmode="numeric" required />
+            </b-input-group>
+          </b-col>
+          <b-col style="flex-grow: initial">
+            <b-input-group prepend="Sum" style="width: 7em">
+              <b-form-input class="btn-success" disabled style="text-align: center" :value="totalPoints(form)" />
+            </b-input-group>
+          </b-col>
         </b-form-row>
         <b-button class="mt-3" type="submit" variant="primary">Submit</b-button>
       </b-form>
     </div>
     <b-table class="mt-5" striped hover :items="game.players" :fields="fields">
-      <template slot="points" slot-scope="data">
-        {{totalPoints(data.item)}}
-      </template>
+      <template slot="points" slot-scope="data">{{totalPoints(data.item)}}</template>
       <template slot="edit" slot-scope="data">
         <b-button @click.native.stop @click="edit(data.index)" variant="primary">Edit</b-button>
       </template>
@@ -101,6 +131,7 @@
             name: null,
             faction: "",
             board: "",
+            popularity: "Medium",
             stars: "0",
             tiles: "0",
             resources: "0",
@@ -114,6 +145,9 @@
           resolutionTiles: ['', '1 Land Rush', '2 Factory Explosion', '3 Spoils of War', '4 King of the Hill', '5 Deja Vu', '6 Mission Possible', '7 Doomsday Clock', '8 Backup Plan'],
           airshipTileReds: ['', '1 Bombard', '2 Bounty', '3 Siege Engine', '4 Distract', '5 Espionage', '6 Blitzkrieg', '7 Toll', '8 War Correspondent'],
           airshipTileGreens: ['', '9 Ferry', '10 Boost', '11 Drill', '12 Hero', '13 Safe Haven', '14 Reap', '15 Craft', '16 Negotiate'],
+          options: {
+            popularity: ['Min', 'Medium', 'Max'],
+          },
           fields: {
             name: { sortable: false },
             faction: { sortable: false },
