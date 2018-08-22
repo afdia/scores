@@ -33,7 +33,7 @@
           <b-form-select v-model="game.triumphTrack" :options="options.triumphTrack" />
         </b-input-group>
         <b-form-group v-if='game.triumphTrack === "Custom"'>
-          <b-form-checkbox-group id="triumphPartsCheckboxes" v-model="game.triumphParts" :options="optionstriumphPart" />
+          <b-form-checkbox-group id="triumphPartsCheckboxes" v-model="game.triumphParts" :options="options.triumphParts" />
         </b-form-group>
         <b-input-group class="my-2">
           <b-input-group-text slot="prepend">
@@ -173,7 +173,7 @@
             faction: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
             board: ['1 Industrial', '2 Engineering', '2A Militant', '3 Patriotic', '3A Innovative', '4 Mechanical', '5 Agricultural'],
             triumphTrack: ['Default', 'Peace', 'War', 'Custom'],
-            triumphPart: ['Upgrades', 'Mechs', 'Buildings', 'Enlists', 'Workers', 'Objective', 'War1', 'War2', 'War3', 'War4', 'Popularity', 'Power', 'Combat Cards', 'Encounters', 'Factory Card', 'Resources'],
+            triumphParts: ['Upgrades', 'Mechs', 'Buildings', 'Enlists', 'Workers', 'Objective', 'War1', 'War2', 'War3', 'War4', 'Popularity', 'Power', 'Combat Cards', 'Encounters', 'Factory Card', 'Resources'],
             resolutionTile: ['None', '1 Land Rush', '2 Factory Explosion', '3 Spoils of War', '4 King of the Hill', '5 Deja Vu', '6 Mission Possible', '7 Doomsday Clock', '8 Backup Plan'],
             airshipTileRed: ['None', '1 Bombard', '2 Bounty', '3 Siege Engine', '4 Distract', '5 Espionage', '6 Blitzkrieg', '7 Toll', '8 War Correspondent'],
             airshipTileGreen: ['None', '9 Ferry', '10 Boost', '11 Drill', '12 Hero', '13 Safe Haven', '14 Reap', '15 Craft', '16 Negotiate'],
