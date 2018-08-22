@@ -73,41 +73,40 @@
           <b-form-select v-model="form.board" :options="options.board" required />
         </b-input-group>
         <b-input-group class="my-2">
-        <b-input-group-text slot="prepend">
-          <div class="leftLabel">Popularity</div>
-        </b-input-group-text>
-        <b-form-select v-model="form.popularity" :options="options.popularity" required />
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Popularity</div>
+          </b-input-group-text>
+          <b-form-select v-model="form.popularity" :options="options.popularity" required />
         </b-input-group>
         <h2>Points</h2>
         <b-form-row>
           <b-col style="flex-grow: initial">
-            <b-input-group prepend="Stars" style="width: 6.5em">
+            <b-input-group class="my-2" prepend="Stars" style="width: 6.7em">
               <b-form-input style="text-align: center" v-model="form.stars" pattern="[0-9]*" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-input-group prepend="Tiles" style="width: 6.2em">
-              <b-form-input style="text-align: center" v-model="form.tiles" pattern="[0-9]*" inputmode="numeric"
-                required />
+            <b-input-group class="my-2" prepend="Tiles" style="width: 6.4em">
+              <b-form-input style="text-align: center" v-model="form.tiles" pattern="[0-9]*" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-input-group prepend="Resources" style="width: 8.7em">
+            <b-input-group class="my-2" prepend="Resources" style="width: 8.9em">
               <b-form-input style="text-align: center" v-model="form.resources" pattern="[0-9]*" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-input-group prepend="Buildings" style="width: 8.3em">
+            <b-input-group class="my-2" prepend="Buildings" style="width: 8.5em">
               <b-form-input style="text-align: center" v-model="form.buildings" pattern="[0-9]*" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-input-group prepend="Coins" style="width: 6.8em">
+            <b-input-group class="my-2" prepend="Coins" style="width: 7em">
               <b-form-input style="text-align: center" v-model="form.coins" pattern="[0-9]*" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-input-group prepend="Sum" style="width: 7em">
+            <b-input-group class="my-2" prepend="Sum" style="width: 7em">
               <b-form-input class="btn-success" disabled style="text-align: center" :value="totalPoints(form)" />
             </b-input-group>
           </b-col>
@@ -118,22 +117,39 @@
     <b-table class="mt-5" striped hover caption-top :items="game.players" :fields="fields">
       <template slot="points" slot-scope="data">{{totalPoints(data.item)}}</template>
       <template slot="edit" slot-scope="data">
-        <b-button @click.native.stop @click="edit(data.index)" variant="primary">Edit</b-button>
+        <b-button size="sm" @click.native.stop @click="edit(data.index)" variant="primary">Edit</b-button>
       </template>
       <template slot="table-caption">
-        <b>Date:</b> {{game.date}}, <b>Triumph Track:</b> {{game.triumphTrack}}, <b>Resolution:</b> {{game.resolutionTile}}, <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}
+        <b>Date:</b> {{game.date}}, <b>Triumph Track:</b> {{game.triumphTrack}}, <b>Resolution:</b> {{game.resolutionTile}},
+        <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}
       </template>
     </b-table>
     <b-button @click="exportAsJson" variant="primary">Export Data</b-button>
-    <b-form-textarea v-if="exportJson !== null" id="exportAsJsonArea" v-model="exportJson" :rows="3">
+    <b-form-textarea v-if="exportJson !== null" id="exportAsJsonArea" v-model="exportJson" :rows="12">
     </b-form-textarea>
-    <b-form-textarea v-if="exportJson !== null" id="exportAsJsonArea" v-model="exportJson" :rows="3">
-    </b-form-textarea>
-    <b-button @click="showOldGames" variant="warning">Show old games</b-button>
-    <b-table v-for="game in oldGames" v-if="showOld" class="mt-5" striped hover caption-top :items="game.players" :fields="fields">
+    <b-button @click="showOldGames" variant="warning">{{ showOld ? 'Hide' : 'Show'}} old games</b-button>
+    <b-table v-for="game in oldGames" v-if="showOld" class="mt-5" striped hover small caption-top :items="game.players" :fields="fields">
       <template slot="points" slot-scope="data">{{totalPoints(data.item)}}</template>
       <template slot="table-caption">
-        <b>Date:</b> {{game.date}}, <b>Triumph Track:</b> {{game.triumphTrack}}, <b>Resolution:</b> {{game.resolutionTile}}, <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}
+        <b>Date:</b> {{game.date}}, <b>Triumph Track:</b> {{game.triumphTrack}}, <b>Resolution:</b> {{game.resolutionTile}},
+        <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}
+      </template>
+      <template slot="edit" slot-scope="row">
+        <b-form-checkbox @click.native.stop @change="row.toggleDetails" v-model="row.detailsShowing">
+          Details
+        </b-form-checkbox>
+      </template>
+      <template slot="row-details" slot-scope="row">
+        <b-card>
+          <b-row class="mb-2">
+            <b-col sm="3" class="text-sm-right"><b>Popularity:</b></b-col>
+            <b-col>{{row.item.popularity}}</b-col>
+          </b-row>
+          <b-row class="mb-2">
+            <b-col sm="3" class="text-sm-right"><b>Points:</b></b-col>
+            <b-col>Stars={{row.item.stars}} Tiles={{row.item.tiles}} Resources={{row.item.resources}} Buildings={{row.item.buildings}} Coins={{row.item.coins}}</b-col>
+          </b-row>
+        </b-card>
       </template>
     </b-table>
     <div v-if="showOld" style="margin-top:5em" class="ct-chart ct-perfect-fourth"></div>
@@ -153,7 +169,7 @@
             buildings: "0",
             coins: "0",
           },
-         options: {
+          options: {
             faction: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
             board: ['1 Industrial', '2 Engineering', '2A Militant', '3 Patriotic', '3A Innovative', '4 Mechanical', '5 Agricultural'],
             triumphTrack: ['Default', 'Peace', 'War', 'Custom'],
@@ -224,7 +240,13 @@
           this.exportJson = JSON.stringify(this.game);
         },
         showOldGames() {
-          this.showOld=true;
+          if (this.showOld == true) {
+            this.showOld = false;
+            return;
+          }
+          this.showOld = true;
+          // sort newest games on top
+          games.sort(function (a, b) { return (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0); });
           this.oldGames = games;
 
           // see https://gionkunz.github.io/chartist-js/api-documentation.html
@@ -235,15 +257,15 @@
               [3, 2, 9, 5, 4, 6, 4]
             ]
           }, {
-            axisX: {
-              // On the x-axis start means top and end means bottom
-              position: 'start'
-            },
-            axisY: {
-              // On the y-axis start means left and end means right
-              position: 'end'
-            }
-          });
+              axisX: {
+                // On the x-axis start means top and end means bottom
+                position: 'start'
+              },
+              axisY: {
+                // On the y-axis start means left and end means right
+                position: 'end'
+              }
+            });
         }
       }
     })
