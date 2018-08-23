@@ -4,6 +4,9 @@
 .leftLabel {
 	width: 6.5em;
 }
+.newxx {
+	width: 6.5em;
+}
 /* increase width of chart bars according to width of view */
 .ct-chart .ct-bar {
 	stroke-width: 3vw;

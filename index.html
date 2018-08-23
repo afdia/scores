@@ -61,9 +61,9 @@
         </b-input-group>
         <h2>Player</h2>
         <b-input-group class="my-2">
-          <b-input-group-text slot="prepend">
-            <div class="leftLabel">Name</div>
-          </b-input-group-text>
+          <b-dropdown text="Player Name" variant="outline-secondary" slot="prepend">
+            <b-dropdown-item @click="form.name = n" v-for="n in usedNames()" :key="n">{{n}}</b-dropdown-item>
+          </b-dropdown>
           <b-form-input v-model="form.name" required />
         </b-input-group>
         <b-input-group class="my-2">
@@ -113,7 +113,7 @@
           </b-col>
           <b-col style="flex-grow: initial">
             <b-input-group class="my-2" prepend="Sum" style="width: 7em">
-              <b-form-input disabled style="text-align: center" :value="pointsPoints(form)" />
+              <b-form-input disabled style="text-align: center" :value="totalPoints(form)" />
             </b-input-group>
           </b-col>
         </b-form-row>
@@ -215,14 +215,20 @@
         }
       },
       methods: {
-        pointsPoints(player) {
+        usedNames() {
+          return ['Andreas', 'Wolfgang', '...'];
+         // games.forEach(game => {}
+        },
+        setName(name) {
+          console.log("ASDAS");
+        },
+        totalPoints(player) {
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
         },
         onSubmit(event) {
           event.preventDefault();
-          var form = this.form;
-          let objCopy = Object.assign({}, form);
-          objCopy.points = this.pointsPoints(objCopy);
+          let objCopy = Object.assign({}, this.form);
+          objCopy.points = this.totalPoints(objCopy);
           let index = -1;
           this.game.players.forEach((value, i) => {
             if (value.name === objCopy.name) {
@@ -234,8 +240,8 @@
           } else {
             this.game.players.push(objCopy)
           }
-          Object.keys(form).forEach(function (k) {
-            form[k] = "";
+          Object.keys(this.form).forEach(function (k) {
+            this.form[k] = "";
           });
         },
         edit(index) {
