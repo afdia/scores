@@ -152,7 +152,8 @@
           <b-row class="mb-2">
             <b-col sm="3" class="text-sm-right"><b>Points:</b></b-col>
             <b-col>Stars={{row.item.stars}} Tiles={{row.item.tiles}} Resources={{row.item.resources}} Buildings={{row.item.buildings}}
-              Coins={{row.item.coins}}</b-col>
+              Coins={{row.item.coins}}
+            </b-col>
           </b-row>
         </b-card>
       </template>
@@ -216,11 +217,14 @@
       },
       methods: {
         usedNames() {
-          return ['Andreas', 'Wolfgang', '...'];
-         // games.forEach(game => {}
-        },
-        setName(name) {
-          console.log("ASDAS");
+          const array = [];
+          games.forEach(game => {
+            game.players.forEach(player => {
+              if (array.indexOf(player.name) === -1) array.push(player.name);
+            });
+          });
+          array.sort();
+         return array;
         },
         totalPoints(player) {
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
