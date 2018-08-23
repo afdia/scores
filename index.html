@@ -253,7 +253,15 @@
           }
           this.showOld = true;
           // sort newest games on top
+          const that = this;
           games.sort(function (a, b) { return (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0); });
+          games.forEach(function(game) {
+            game.players.sort(function (a, b) {
+              const aPoints = that.totalPoints(a);
+              const bPoints = that.totalPoints(b);
+              return (aPoints < bPoints) ? 1 : ((bPoints < aPoints) ? -1 : 0);
+            });
+          });
           this.oldGames = games;
 
           // see https://gionkunz.github.io/chartist-js/api-documentation.html
