@@ -156,7 +156,7 @@
         </b-card>
       </template>
     </b-table>
-    <div v-if="showOld" style="margin-top:5em" class="ct-chart ct-perfect-fourth"></div>
+    <div v-show="showOld" style="margin-top:5em" class="ct-chart ct-octave"></div>
   </div>
   <script>new Vue({
       el: '#app',
@@ -266,21 +266,27 @@
           });
           this.oldGames = games;
 
+          const winsByFaction = Array.apply(null, Array(this.options.faction.length)).map(function() { return 0 });
+          games.forEach(game => {
+           const winningFaction = game.players[0].faction;
+           const idx = this.options.faction.indexOf(winningFaction);
+           winsByFaction[idx] += 1;
+          });
+          
           // see https://gionkunz.github.io/chartist-js/api-documentation.html
           new Chartist.Bar('.ct-chart', {
             labels: this.options.faction,
             series: [
-              [5, 4, 3, 7, 5, 10, 3],
-              [3, 2, 9, 5, 4, 6, 4]
+              winsByFaction
             ]
           }, {
               axisX: {
-                // On the x-axis start means top and end means bottom
-                position: 'start'
+                position: 'start',
+                onlyInteger: true,
               },
               axisY: {
-                // On the y-axis start means left and end means right
-                position: 'end'
+                position: 'end',
+                onlyInteger: true,
               }
             });
         }

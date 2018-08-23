@@ -4,3 +4,6 @@
 .leftLabel {
 	width: 6.5em;
 }
+.ct-chart .ct-bar {
+    stroke-width: 3vw;
+}
