@@ -88,32 +88,32 @@
         <b-form-row>
           <b-col style="flex-grow: initial">
             <b-input-group class="my-2" prepend="Stars" style="width: 6.7em">
-              <b-form-input style="text-align: center" v-model="form.stars" pattern="[0-9]*" inputmode="numeric" required />
+              <b-form-input style="text-align: center" v-model="form.stars" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
             <b-input-group class="my-2" prepend="Tiles" style="width: 6.4em">
-              <b-form-input style="text-align: center" v-model="form.tiles" pattern="[0-9]*" inputmode="numeric" required />
+              <b-form-input style="text-align: center" v-model="form.tiles" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
             <b-input-group class="my-2" prepend="Resources" style="width: 9em">
-              <b-form-input style="text-align: center" v-model="form.resources" pattern="[0-9]*" inputmode="numeric" required />
+              <b-form-input style="text-align: center" v-model="form.resources" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
             <b-input-group class="my-2" prepend="Buildings" style="width: 8.5em">
-              <b-form-input style="text-align: center" v-model="form.buildings" pattern="[0-9]*" inputmode="numeric" required />
+              <b-form-input style="text-align: center" v-model="form.buildings" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
             <b-input-group class="my-2" prepend="Coins" style="width: 7em">
-              <b-form-input style="text-align: center" v-model="form.coins" pattern="[0-9]*" inputmode="numeric" required />
+              <b-form-input style="text-align: center" v-model="form.coins" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
             <b-input-group class="my-2" prepend="Sum" style="width: 7em">
-              <b-form-input class="btn-success" disabled style="text-align: center" :value="totalPoints(form)" />
+              <b-form-input disabled style="text-align: center" :value="pointsPoints(form)" />
             </b-input-group>
           </b-col>
         </b-form-row>
@@ -121,7 +121,6 @@
       </b-form>
     </div>
     <b-table class="mt-5" striped hover caption-top :items="game.players" :fields="fields">
-      <template slot="points" slot-scope="data">{{totalPoints(data.item)}}</template>
       <template slot="edit" slot-scope="data">
         <b-button size="sm" @click.native.stop @click="edit(data.index)" variant="primary">Edit</b-button>
       </template>
@@ -135,7 +134,6 @@
     </b-form-textarea>
     <b-button @click="showOldGames" variant="warning">{{ showOld ? 'Hide' : 'Show'}} old games</b-button>
     <b-table v-for="game in oldGames" v-if="showOld" class="mt-5" striped hover small caption-top :items="game.players" :fields="fields">
-      <template slot="points" slot-scope="data">{{totalPoints(data.item)}}</template>
       <template slot="table-caption">
         <b>Date:</b> {{game.date}}, <b>Track:</b> {{game.triumphTrack}}, <b>Resolution:</b> {{game.resolutionTile}},
         <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}, <b>Notes:</b> {{game.notes}}
@@ -174,6 +172,7 @@
             resources: "0",
             buildings: "0",
             coins: "0",
+            points: "0",
           },
           options: {
             faction: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
@@ -186,10 +185,10 @@
             popularity: ['Min', 'Medium', 'Max'],
           },
           fields: {
-            name: { sortable: false },
-            faction: { sortable: false },
-            board: { sortable: false },
-            points: { sortable: false },
+            name: { sortable: true },
+            faction: { sortable: true },
+            board: { sortable: true },
+            points: { sortable: true },
             edit: {
               label: '',
               'class': 'button-col',
@@ -212,13 +211,14 @@
         }
       },
       methods: {
-        totalPoints(player) {
+        pointsPoints(player) {
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
         },
         onSubmit(event) {
           event.preventDefault();
           var form = this.form;
           let objCopy = Object.assign({}, form);
+          objCopy.points = this.pointsPoints(objCopy);
           let index = -1;
           this.game.players.forEach((value, i) => {
             if (value.name === objCopy.name) {
@@ -235,7 +235,6 @@
           });
         },
         edit(index) {
-          console.log("hello " + index)
           var item = this.game.players[index];
           let objCopy = Object.assign({}, item);
           this.form = objCopy;
@@ -256,11 +255,14 @@
           const that = this;
           games.sort(function (a, b) { return (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0); });
           games.forEach(function(game) {
-            game.players.sort(function (a, b) {
-              const aPoints = that.totalPoints(a);
-              const bPoints = that.totalPoints(b);
-              return (aPoints < bPoints) ? 1 : ((bPoints < aPoints) ? -1 : 0);
+            game.players.sort(function (a, b) { // sort by points (most points is top player)
+              return (a.points < b.points) ? 1 : ((b.points < a.points) ? -1 : 0);
             });
+            game.players[0]._rowVariant = 'success'; // highlight the winner (= top player after sorting)
+            game.players[1]._rowVariant = 'warning';
+            if (game.players.length > 2) {
+              game.players[2]._rowVariant = 'danger';
+            }
           });
           this.oldGames = games;
 
