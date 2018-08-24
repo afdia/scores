@@ -162,6 +162,7 @@
     <div v-show="showOld" style="margin-top:5em">
       <div class="ct-chart ct-chart-wins ct-octave"></div>
       <div class="ct-chart ct-chart-games ct-octave"></div>
+      <div class="ct-chart ct-chart-factionWins ct-octave"></div>
     </div>
   </div>
   <script>new Vue({
@@ -218,14 +219,7 @@
       },
       methods: {
         usedNames() {
-          const array = [];
-          games.forEach(game => {
-            game.players.forEach(player => {
-              if (array.indexOf(player.name) === -1) array.push(player.name);
-            });
-          });
-          array.sort();
-         return array;
+          return extractUsedNames(games);
         },
         totalPoints(player) {
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);

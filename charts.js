@@ -1,3 +1,14 @@
+function extractUsedNames(games) {
+    const array = [];
+    games.forEach(game => {
+      game.players.forEach(player => {
+        if (array.indexOf(player.name) === -1) array.push(player.name);
+      });
+    });
+    array.sort();
+   return array;
+}
+
 function drawGraphs(vue) {
     // see https://gionkunz.github.io/chartist-js/api-documentation.html
     var barOptions = {
@@ -19,6 +30,11 @@ function drawGraphs(vue) {
         labels: vue.options.board,
         series: getGameMatrix(false, vue),
     }, barOptions);
+    const playerList = extractUsedNames(vue.oldGames);
+    new Chartist.Bar('.ct-chart-factionWins', {
+        labels: playerList,
+        series: getPlayerFactionWins(playerList, true, vue),
+    }, barOptions);
 }
 
 function getGameMatrix(onlyWins, vue) {
@@ -39,4 +55,24 @@ function getGameMatrix(onlyWins, vue) {
         });
     });
     return winsByBoardAndFaction;
+}
+
+function getPlayerFactionWins(playerList, onlyWins, vue) {
+    const winsByPlayer = Array.apply(null, Array(playerList.length)).map(function () { return 0 });
+    const winsByPlayerAndFaction = [winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer];
+    for (var i = 0; i < vue.options.faction.length; i++) {
+        winsByPlayerAndFaction[i] = winsByPlayer.slice();
+    }
+    vue.oldGames.forEach(game => {
+        game.players.every(player => {
+            const winningPlayerName = player.name;
+            const winningFactionName = player.faction;
+            const factionIdx = vue.options.faction.indexOf(winningFactionName);
+            const playerIdx = playerList.indexOf(winningPlayerName);
+            if (playerIdx !== -1) winsByPlayerAndFaction[factionIdx][playerIdx] += 1;
+            if (onlyWins) return false;
+            else return true;
+        });
+    });
+    return winsByPlayerAndFaction;
 }
