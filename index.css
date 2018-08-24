@@ -19,16 +19,16 @@
 	stroke: green;
 }
 .ct-chart .ct-series-b .ct-bar {
-	stroke: gold;
+	stroke: #ffe900;
 }
 .ct-chart .ct-series-c .ct-bar {
-	stroke: orange;
+	stroke: darkorange;
 }
 .ct-chart .ct-series-d .ct-bar {
 	stroke: blue;
 }
 .ct-chart .ct-series-e .ct-bar {
-	stroke: lightgray;
+	stroke: #e4e4e4;
 }
 .ct-chart .ct-series-f .ct-bar {
 	stroke: red;
