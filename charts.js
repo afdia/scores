@@ -10,6 +10,44 @@ function extractUsedNames(games) {
 }
 
 function drawGraphs(vue) {
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Risk Level', 'Other'],
+          datasets: [
+            {
+              label: 'Low',
+              data: [67.8, 33],
+              backgroundColor: '#D6E9C6',
+              stack: 1,
+            },
+            {
+              label: 'Moderate',
+              data: [20.7, 10],
+              backgroundColor: '#FAEBCC',
+              stack: 1,
+            },
+            {
+              label: 'High',
+              data: [11.4, 5],
+              backgroundColor: '#EBCCD1',
+              stack: 2,
+            }
+          ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Chart.js Bar Chart - Stacked'
+            },
+          scales: {
+            xAxes: [{ stacked: true }],
+            yAxes: [{ stacked: true }]
+          }
+        }
+      });
+
     // see https://gionkunz.github.io/chartist-js/api-documentation.html
     var barOptions = {
         stackBars: true,
