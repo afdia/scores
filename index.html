@@ -14,7 +14,6 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
   <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
   <script type="text/javascript" src="games.js"></script>
   <script type="text/javascript" src="charts.js"></script>
@@ -162,12 +161,11 @@
       </template>
     </b-table>
     <div v-show="showOld" style="margin-top:5em">
-      <canvas id="myChart" width="400" height="400"></canvas>
-
-      <div class="ct-chart ct-chart-wins ct-octave"></div>
-      <div class="ct-chart ct-chart-games ct-octave"></div>
-      <div class="ct-chart ct-chart-factionWins ct-octave"></div>
-      <div class="ct-chart ct-chart-factionGames ct-octave"></div>
+      <canvas id="ct-chart-wins"></canvas>
+      <canvas id="ct-chart-games"></canvas>
+      <canvas id="ct-chart-factionWins"></canvas>
+      <canvas id="ct-chart-factionGames"></canvas>
+      <canvas id="ct-chart-experiment"></canvas>
     </div>
   </div>
   <script>new Vue({

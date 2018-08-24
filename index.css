@@ -4,41 +4,9 @@
 .leftLabel {
 	width: 6.3em;
 }
-.newxx {
-	width: 6.5em;
-}
-/* increase width of chart bars according to width of view */
-.ct-chart .ct-bar {
-	stroke-width: 3vw;
-}
-.ct-chart {
-	max-width: 60em;
-}
-/* colorize bars according to faction colors */
-.ct-chart .ct-series-a .ct-bar {
-	stroke: green;
-}
-.ct-chart .ct-series-b .ct-bar {
-	stroke: #ffe900;
-}
-.ct-chart .ct-series-c .ct-bar {
-	stroke: darkorange;
-}
-.ct-chart .ct-series-d .ct-bar {
-	stroke: blue;
-}
-.ct-chart .ct-series-e .ct-bar {
-	stroke: #e4e4e4;
-}
-.ct-chart .ct-series-f .ct-bar {
-	stroke: red;
-}
-.ct-chart .ct-series-g .ct-bar {
-	stroke: black;
-}
-.ct-chart .ct-series-h .ct-bar {
-	stroke: blueviolet;
-}
-.ct-chart .ct-series-i .ct-bar {
-	stroke: turquoise;
+/* limit canvas size */
+canvas{
+	width: 100% !important;
+	max-width: 1100px;
+	height: auto !important;
 }

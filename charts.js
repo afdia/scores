@@ -1,16 +1,23 @@
 function extractUsedNames(games) {
     const array = [];
     games.forEach(game => {
-      game.players.forEach(player => {
-        if (array.indexOf(player.name) === -1) array.push(player.name);
-      });
+        game.players.forEach(player => {
+            if (array.indexOf(player.name) === -1) array.push(player.name);
+        });
     });
     array.sort();
-   return array;
+    return array;
 }
 
 function drawGraphs(vue) {
-    var ctx = document.getElementById("myChart");
+    const playerList = extractUsedNames(vue.oldGames);
+    drawChartJs(document.getElementById("ct-chart-wins"), vue.options.board, vue.options.faction, getGameMatrix(true, vue), 'Board+Faction Wins');
+    drawChartJs(document.getElementById("ct-chart-games"), vue.options.board, vue.options.faction, getGameMatrix(false, vue), 'Board+Faction Games');
+    drawChartJs(document.getElementById("ct-chart-factionWins"), playerList, vue.options.faction, getPlayerFactionWins(playerList, true, vue), 'Player+Faction Wins');
+    drawChartJs(document.getElementById("ct-chart-factionGames"), playerList, vue.options.faction, getPlayerFactionWins(playerList, false, vue), 'Player+Faction Games');
+
+    //TODO EXPERIEMNTS
+    var ctx = document.getElementById("ct-chart-experiment");
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -47,36 +54,6 @@ function drawGraphs(vue) {
           }
         }
       });
-
-    // see https://gionkunz.github.io/chartist-js/api-documentation.html
-    var barOptions = {
-        stackBars: true,
-        axisX: {
-            position: 'start',
-            onlyInteger: true,
-        },
-        axisY: {
-            position: 'end',
-            onlyInteger: true,
-        }
-    };
-    new Chartist.Bar('.ct-chart-wins', {
-        labels: vue.options.board,
-        series: getGameMatrix(true, vue),
-    }, barOptions);
-    new Chartist.Bar('.ct-chart-games', {
-        labels: vue.options.board,
-        series: getGameMatrix(false, vue),
-    }, barOptions);
-    const playerList = extractUsedNames(vue.oldGames);
-    new Chartist.Bar('.ct-chart-factionWins', {
-        labels: playerList,
-        series: getPlayerFactionWins(playerList, true, vue),
-    }, barOptions);
-    new Chartist.Bar('.ct-chart-factionGames', {
-        labels: playerList,
-        series: getPlayerFactionWins(playerList, false, vue),
-    }, barOptions);
 }
 
 function getGameMatrix(onlyWins, vue) {
@@ -117,4 +94,96 @@ function getPlayerFactionWins(playerList, onlyWins, vue) {
         });
     });
     return winsByPlayerAndFaction;
+}
+
+function drawChartJs(ctx, labelArray, datasetLabel, data, title) {
+    var factionIdx = 0;
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labelArray,
+            datasets: [
+                {
+                    label: datasetLabel[factionIdx],
+                    data: data[factionIdx++],
+                    backgroundColor: 'rgba(0, 128, 0, 0.6)',
+                },
+                {
+                    label: datasetLabel[factionIdx],
+                    data: data[factionIdx++],
+                    backgroundColor: 'rgba(255, 234, 0, 0.6)',
+                },
+                {
+                    label: datasetLabel[factionIdx],
+                    data: data[factionIdx++],
+                    backgroundColor: 'rgba(255, 140, 0, 0.6)',
+                },
+                {
+                    label: datasetLabel[factionIdx],
+                    data: data[factionIdx++],
+                    backgroundColor: 'rgba(0, 0, 255, 0.6)',
+                },
+                {
+                    label: datasetLabel[factionIdx],
+                    data: data[factionIdx++],
+                    backgroundColor: 'rgba(225, 225, 225, 0.6)',
+                },
+                {
+                    label: datasetLabel[factionIdx],
+                    data: data[factionIdx++],
+                    backgroundColor: 'rgba(255, 0, 0, 0.6)',
+                },
+                {
+                    label: datasetLabel[factionIdx],
+                    data: data[factionIdx++],
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                },
+                {
+                    label: datasetLabel[factionIdx],
+                    data: data[factionIdx++],
+                    backgroundColor: 'rgba(137, 43, 226, 0.6)',
+                },
+                {
+                    label: datasetLabel[factionIdx],
+                    data: data[factionIdx++],
+                    backgroundColor: 'rgba(64, 224, 208, 0.6)',
+                },
+            ],
+            borderWidth: 1
+        },
+        options: {
+            // Show total sum of stacked bars // see https://stackoverflow.com/a/42648298
+            tooltips: {
+                mode: 'index',
+                callbacks: {
+                    afterTitle: function() {
+                        window.total = 0;
+                    },
+                    label: function(tooltipItem, data) {
+                        var corporation = data.datasets[tooltipItem.datasetIndex].label;
+                        var valor = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        window.total += valor;
+                        return corporation + ": " + valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");             
+                    },
+                    footer: function() {
+                        return "Total: " + window.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+                    }
+                }
+            },
+            title: {
+                display: true,
+                text: title
+            },
+            scales: {
+                xAxes: [{ stacked: true }],
+                yAxes: [{
+                    stacked: true,
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function (value) { if (value % 1 === 0) { return value; } },
+                    }
+                }]
+            }
+        }
+    });
 }
