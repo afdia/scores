@@ -35,6 +35,10 @@ function drawGraphs(vue) {
         labels: playerList,
         series: getPlayerFactionWins(playerList, true, vue),
     }, barOptions);
+    new Chartist.Bar('.ct-chart-factionGames', {
+        labels: playerList,
+        series: getPlayerFactionWins(playerList, false, vue),
+    }, barOptions);
 }
 
 function getGameMatrix(onlyWins, vue) {
