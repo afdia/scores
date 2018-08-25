@@ -11,13 +11,15 @@ function extractUsedNames(games) {
 
 function drawGraphs(vue) {
     const playerList = extractUsedNames(vue.oldGames);
-    drawChartJs(document.getElementById("ct-chart-wins"), vue.options.board, vue.options.faction, getGameMatrix(true, vue), 'Board+Faction Wins');
-    drawChartJs(document.getElementById("ct-chart-games"), vue.options.board, vue.options.faction, getGameMatrix(false, vue), 'Board+Faction Games');
-    drawChartJs(document.getElementById("ct-chart-factionWins"), playerList, vue.options.faction, getPlayerFactionWins(playerList, true, vue), 'Player+Faction Wins');
-    drawChartJs(document.getElementById("ct-chart-factionGames"), playerList, vue.options.faction, getPlayerFactionWins(playerList, false, vue), 'Player+Faction Games');
+    drawChartJs(document.getElementById("ct-chart-games"), vue.options.board, vue.options.faction, getGameMatrix('games', vue), 'Board+Faction Games');
+    drawChartJs(document.getElementById("ct-chart-points"), vue.options.board, vue.options.faction, getGameMatrix('points', vue), 'Board+Faction Points (1.=3, 2.=2, 3.=1)');
+    drawChartJs(document.getElementById("ct-chart-wins"), vue.options.board, vue.options.faction, getGameMatrix('wins', vue), 'Board+Faction Wins');
+    drawChartJs(document.getElementById("ct-chart-factionGames"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'games', vue), 'Player+Faction Games');
+    drawChartJs(document.getElementById("ct-chart-factionPoints"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'points', vue), 'Player+Faction Points (1.=3, 2.=2, 3.=1)');
+    drawChartJs(document.getElementById("ct-chart-factionWins"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'wins', vue), 'Player+Faction Wins');
 
     //TODO EXPERIEMNTS
-    var ctx = document.getElementById("ct-chart-experiment");
+    /*var ctx = document.getElementById("ct-chart-experiment");
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -53,43 +55,53 @@ function drawGraphs(vue) {
             yAxes: [{ stacked: true }]
           }
         }
-      });
+      });*/
 }
 
-function getGameMatrix(onlyWins, vue) {
+function getGameMatrix(type, vue) {
     const winsByBoard = Array.apply(null, Array(vue.options.board.length)).map(function () { return 0 });
     const winsByBoardAndFaction = [winsByBoard, winsByBoard, winsByBoard, winsByBoard, winsByBoard, winsByBoard, winsByBoard, winsByBoard, winsByBoard];
     for (var i = 0; i < vue.options.faction.length; i++) {
         winsByBoardAndFaction[i] = winsByBoard.slice();
     }
     vue.oldGames.forEach(game => {
-        game.players.every(player => {
+        game.players.every((player, gamePlayerIdx) => {
             const winningBoardName = player.board;
             const winningFactionName = player.faction;
             const factionIdx = vue.options.faction.indexOf(winningFactionName);
             const boardIdx = vue.options.board.indexOf(winningBoardName);
-            winsByBoardAndFaction[factionIdx][boardIdx] += 1;
-            if (onlyWins) return false;
+            let inc = 1;
+            if (type === 'points') {
+                inc = 3 - gamePlayerIdx;
+                if (inc < 0) inc = 0;
+            }
+            winsByBoardAndFaction[factionIdx][boardIdx] += inc;
+            if (type === 'wins') return false;
             else return true;
         });
     });
     return winsByBoardAndFaction;
 }
 
-function getPlayerFactionWins(playerList, onlyWins, vue) {
+function getPlayerFactionWins(playerList, type, vue) {
     const winsByPlayer = Array.apply(null, Array(playerList.length)).map(function () { return 0 });
     const winsByPlayerAndFaction = [winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer, winsByPlayer];
     for (var i = 0; i < vue.options.faction.length; i++) {
         winsByPlayerAndFaction[i] = winsByPlayer.slice();
     }
     vue.oldGames.forEach(game => {
-        game.players.every(player => {
+        game.players.every((player, gamePlayerIdx) => {
             const winningPlayerName = player.name;
             const winningFactionName = player.faction;
             const factionIdx = vue.options.faction.indexOf(winningFactionName);
             const playerIdx = playerList.indexOf(winningPlayerName);
-            if (playerIdx !== -1) winsByPlayerAndFaction[factionIdx][playerIdx] += 1;
-            if (onlyWins) return false;
+            let inc = 1;
+            if (type === 'points') {
+                inc = 3 - gamePlayerIdx;
+                if (inc < 0) inc = 0;
+            }
+            if (playerIdx !== -1) winsByPlayerAndFaction[factionIdx][playerIdx] += inc;
+            if (type === 'wins') return false;
             else return true;
         });
     });
