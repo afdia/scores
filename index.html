@@ -169,11 +169,21 @@
       </template>
     </b-table>
     <div v-show="showOld" style="margin-top:5em">
-      <canvas id="ct-chart-wins"></canvas>
-      <canvas id="ct-chart-games"></canvas>
-      <canvas id="ct-chart-factionWins"></canvas>
-      <canvas id="ct-chart-factionGames"></canvas>
-      <canvas id="ct-chart-experiment"></canvas>
+      <div class="chart-container">
+        <canvas id="ct-chart-wins"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="ct-chart-games"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="ct-chart-factionWins"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="ct-chart-factionGames"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="ct-chart-experiment"></canvas>
+      </div>
     </div>
   </div>
   <script>new Vue({
