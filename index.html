@@ -74,6 +74,12 @@
           </b-input-group-text>
           <b-form-select v-model="form.faction" :options="options.faction" required />
         </b-input-group>
+        <b-input-group class="my-2" v-if="isVesnaOrFenris(form.faction)">
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Faction Start</div>
+          </b-input-group-text>
+          <b-form-select v-model="form.mapStart" :options="options.mapStart" required />
+        </b-input-group>
         <b-input-group class="my-2">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Board</div>
@@ -175,6 +181,7 @@
           form: {
             name: null,
             faction: "",
+            mapStart: "",
             board: "",
             popularity: "Medium",
             stars: "0",
@@ -186,6 +193,7 @@
           },
           options: {
             faction: ['Albion', 'Crimean', 'Fenris', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa', 'Vesna'],
+            mapStart: ['Albion', 'Crimean', 'Nordic', 'Polania', 'Rusviet', 'Saxony', 'Togawa'],
             board: ['1 Industrial', '2 Engineering', '2A Militant', '3 Patriotic', '3A Innovative', '4 Mechanical', '5 Agricultural'],
             triumphTrack: ['Default', 'Peace', 'War', 'Custom'],
             triumphParts: ['Upgrades', 'Mechs', 'Buildings', 'Enlists', 'Workers', 'Objective', 'War1', 'War2', 'War3', 'War4', 'Popularity', 'Power', 'Combat Cards', 'Encounters', 'Factory Card', 'Resources'],
@@ -227,8 +235,14 @@
         totalPoints(player) {
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
         },
+        isVesnaOrFenris(faction) {
+          return faction === 'Vesna' || faction === 'Fenris';
+        },
         onSubmit(event) {
           event.preventDefault();
+          if (!this.isVesnaOrFenris(this.form.faction)) {
+            this.form.mapStart = this.form.faction;
+          }
           let objCopy = Object.assign({}, this.form);
           objCopy.points = this.totalPoints(objCopy);
           let index = -1;
@@ -242,7 +256,7 @@
           } else {
             this.game.players.push(objCopy)
           }
-          Object.keys(this.form).forEach(function (k) {
+          Object.keys(this.form).forEach(k => {
             this.form[k] = "";
           });
         },

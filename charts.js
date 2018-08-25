@@ -170,6 +170,7 @@ function drawChartJs(ctx, labelArray, datasetLabel, data, title) {
                     }
                 }
             },
+            maintainAspectRatio: false, // necessary to allow higher graphs for phone display
             title: {
                 display: true,
                 text: title
