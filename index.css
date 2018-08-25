@@ -5,10 +5,13 @@
 	width: 6.3em;
 }
 /* limit canvas size */
-.chart-container{
+.chart-container {
 	position: relative;
-	width:100vw;
+	width: 100vw;
 	max-width: 1100px;
-	height:50vh;
+	height: 50vh;
 	min-height: 500px;
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
 }
