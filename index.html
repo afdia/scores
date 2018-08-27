@@ -59,6 +59,12 @@
         </b-input-group>
         <b-input-group class="my-2">
           <b-input-group-text slot="prepend">
+            <div class="leftLabel">Mods</div>
+          </b-input-group-text>
+          <b-form-select v-model="game.mods" :options="options.mods" />
+        </b-input-group>
+        <b-input-group class="my-2">
+          <b-input-group-text slot="prepend">
             <div class="leftLabel">Notes</div>
           </b-input-group-text>
           <b-form-input v-model="game.notes" />
@@ -94,6 +100,16 @@
           </b-input-group-text>
           <b-form-select v-model="form.popularity" :options="options.popularity" required />
         </b-input-group>
+        <div v-if='game.mods.includes("Mech")'>
+          <b-form-group label="<b>Mech Mods</b>">
+            <b-form-checkbox-group v-model="form.mechMods" :options="options.mechMods" />
+          </b-form-group>
+        </div>
+        <div v-if='game.mods.includes("Infrastructure")'>
+          <b-form-group label="<b>Infrastructure Mods</b>">
+            <b-form-checkbox-group v-model="form.infraMods" :options="options.infraMods" />
+          </b-form-group>
+        </div>
         <h2>Points</h2>
         <b-form-row>
           <b-col style="flex-grow: initial">
@@ -198,6 +214,8 @@
             faction: "",
             mapStart: "",
             board: "",
+            mechMods: [],
+            infraMods: [],
             popularity: "Medium",
             stars: "0",
             tiles: "0",
@@ -215,6 +233,9 @@
             resolutionTile: ['None', '1 Land Rush', '2 Factory Explosion', '3 Spoils of War', '4 King of the Hill', '5 Deja Vu', '6 Mission Possible', '7 Doomsday Clock', '8 Backup Plan'],
             airshipTileRed: ['None', '1 Bombard', '2 Bounty', '3 Siege Engine', '4 Distract', '5 Espionage', '6 Blitzkrieg', '7 Toll', '8 War Correspondent'],
             airshipTileGreen: ['None', '9 Ferry', '10 Boost', '11 Drill', '12 Hero', '13 Safe Haven', '14 Reap', '15 Craft', '16 Negotiate'],
+            mods: ['None', 'Mech', 'Infrastructure', 'Mech + Infrastructure'],
+            infraMods: ['Assembly Line', 'Automachines', 'Cavalry', 'Construction', 'Machinery', 'Propaganda', 'Recruitment Office', 'Spy'],
+            mechMods: ['Armor', 'Artillery', 'Camaraderie', 'Entrenched', 'Feint', 'Foothold', 'Pontoons', 'Regroup', 'Reinforce', 'Scout', 'Stealth', 'Suiton', 'Sword', 'Tactics', 'Township', 'Underpass'],
             popularity: ['Min', 'Medium', 'Max'],
           },
           fields: {
@@ -235,6 +256,7 @@
             resolutionTile: 'None',
             airshipRed: 'None',
             airshipGreen: 'None',
+            mods: 'None',
             notes: '',
             players: [],
           },
