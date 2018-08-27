@@ -82,6 +82,9 @@
           </b-input-group-text>
           <b-form-select v-model="form.faction" :options="options.faction" required />
         </b-input-group>
+        <b-form-group class="my-2" v-if='isVesna(form.faction)' label="<b>Vesna Mech Mods</b>">
+          <b-form-checkbox-group v-model="form.vesnaMech" :options="options.vesnaMech" />
+        </b-form-group>
         <b-input-group class="my-2" v-if="isVesnaOrFenris(form.faction)">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Faction Start</div>
@@ -212,6 +215,7 @@
           form: {
             name: null,
             faction: "",
+            vesnaMech: [],
             mapStart: "",
             board: "",
             mechMods: [],
@@ -237,6 +241,7 @@
             infraMods: ['Assembly Line', 'Automachines', 'Cavalry', 'Construction', 'Machinery', 'Propaganda', 'Recruitment Office', 'Spy'],
             mechMods: ['Armor', 'Artillery', 'Camaraderie', 'Entrenched', 'Feint', 'Foothold', 'Pontoons', 'Regroup', 'Reinforce', 'Scout', 'Stealth', 'Suiton', 'Sword', 'Tactics', 'Township', 'Underpass'],
             popularity: ['Min', 'Medium', 'Max'],
+            vesnaMech: ["Artillery", "Camaraderie", "Disarm", "Feint", "People's Army", "Regroup", "Ronin", "Scout", "Seaworthy", "Shield", "Submerge", "Suiton", "Sword", "Tactics", "Township", "Underpass", "Wayfare"],
           },
           fields: {
             name: { sortable: true },
@@ -275,12 +280,18 @@
         isVesnaOrFenris(faction) {
           return faction === 'Vesna' || faction === 'Fenris';
         },
+        isVesna(faction) {
+          return faction === 'Vesna';
+        },
         onSubmit(event) {
           event.preventDefault();
           if (!this.isVesnaOrFenris(this.form.faction)) {
             this.form.mapStart = this.form.faction;
           }
           let objCopy = Object.assign({}, this.form);
+          if (!this.isVesna(objCopy.faction)) {
+            objCopy.vesnaMech = undefined;
+          }
           objCopy.points = this.totalPoints(objCopy);
           let index = -1;
           this.game.players.forEach((value, i) => {
