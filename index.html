@@ -72,7 +72,7 @@
         <h2>Player</h2>
         <b-input-group class="my-2">
           <b-dropdown text="Player Name" variant="outline-secondary" slot="prepend">
-            <b-dropdown-item @click="form.name = n" v-for="n in usedNames()" :key="n">{{n}}</b-dropdown-item>
+            <b-dropdown-item @click="form.name = n" v-for="n in usedNames" :key="n">{{n}}</b-dropdown-item>
           </b-dropdown>
           <b-form-input v-model="form.name" required />
         </b-input-group>
@@ -158,10 +158,46 @@
         <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}, <b>Notes:</b> {{game.notes}}
       </template>
     </b-table>
-    <b-button @click="exportAsJson" variant="primary">Export Data</b-button>
+    <b-button class="my-3" @click="exportAsJson" variant="primary">Export Data</b-button>
     <b-form-textarea v-if="exportJson !== null" id="exportAsJsonArea" v-model="exportJson" :rows="12">
     </b-form-textarea>
-    <b-button @click="showOldGames" variant="warning">{{ showOld ? 'Hide' : 'Show'}} old games</b-button>
+    <b-button class="my-3" @click="showOldGames" variant="warning">{{ showOld ? 'Hide' : 'Show'}} old games</b-button>
+    <div v-show="showOld">
+      <b-form-group v-show="showOld" label="<b>Only show games containing the following players</b>">
+        <b-form-checkbox-group v-model="chartPlayers" :options="usedNames" />
+      </b-form-group>
+      <b-form-row>
+        <b-col style="flex-grow: initial">
+          <b-input-group class="my-2" prepend="Min Players" style="width: 9em">
+            <b-form-input v-model="chartMinPlayers" inputmode="numeric" />
+          </b-input-group>
+        </b-col>
+        <b-col style="flex-grow: initial">
+          <b-input-group class="my-2" prepend="Max Players" style="width: 9em">
+            <b-form-input v-model="chartMaxPlayers" inputmode="numeric" />
+          </b-input-group>
+        </b-col>
+        </b-col>
+      </b-form-row>
+      <div class="chart-container">
+        <canvas id="ct-chart-games"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="ct-chart-points"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="ct-chart-wins"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="ct-chart-factionGames"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="ct-chart-factionPoints"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="ct-chart-factionWins"></canvas>
+      </div>
+    </div>
     <b-table v-for="game in oldGames" v-if="showOld" class="mt-5" striped hover small caption-top :items="game.players" :fields="fields">
       <template slot="table-caption">
         <b>Date:</b> {{game.date}}, <b>Track:</b> {{game.triumphTrack}}, <b>Resolution:</b> {{game.resolutionTile}},
@@ -187,26 +223,6 @@
         </b-card>
       </template>
     </b-table>
-    <div v-show="showOld" style="margin-top:5em">
-      <div class="chart-container">
-        <canvas id="ct-chart-games"></canvas>
-      </div>
-      <div class="chart-container">
-        <canvas id="ct-chart-points"></canvas>
-      </div>
-      <div class="chart-container">
-        <canvas id="ct-chart-wins"></canvas>
-      </div>
-      <div class="chart-container">
-        <canvas id="ct-chart-factionGames"></canvas>
-      </div>
-      <div class="chart-container">
-        <canvas id="ct-chart-factionPoints"></canvas>
-      </div>
-      <div class="chart-container">
-        <canvas id="ct-chart-factionWins"></canvas>
-      </div>
-    </div>
   </div>
   <script>new Vue({
       el: '#app',
@@ -267,13 +283,67 @@
           },
           exportJson: null,
           showOld: false,
-          oldGames: [],
+          chartPlayers: [],
+          chartMinPlayers: '1',
+          chartMaxPlayers: '7',
         }
       },
-      methods: {
-        usedNames() {
-          return extractUsedNames(games);
+      computed: {
+        oldGames() {
+          let chartPlayers = this.chartPlayers;
+          let oldGames = [];
+          games.forEach(game => {
+            let add = true;
+            game.players.forEach(player => {
+              if (!chartPlayers.includes(player.name)) add = false;
+            });
+            if (add) {
+              if (game.players.length >= this.chartMinPlayers && game.players.length <= this.chartMaxPlayers) {
+                oldGames.push(game);
+              }
+            }
+          });
+          return oldGames;
         },
+        usedNames() {
+          const array = [];
+          games.forEach(game => {
+            game.players.forEach(player => {
+              if (array.indexOf(player.name) === -1) array.push(player.name);
+            });
+          });
+          array.sort();
+          return array;
+        },
+      },
+      created() {
+        // read sort and colorize old games
+        games.sort(function (a, b) { return (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0); });
+        games.forEach(function (game) {
+          game.players.sort(function (a, b) { // sort by points (most points is top player)
+            return (a.points < b.points) ? 1 : ((b.points < a.points) ? -1 : 0);
+          });
+          game.players[0]._rowVariant = 'success'; // highlight the winner (= top player after sorting)
+          game.players[1]._rowVariant = 'warning';
+          if (game.players.length > 2) {
+            game.players[2]._rowVariant = 'danger';
+          }
+        });
+        // init chart players
+        this.chartPlayers = this.usedNames;
+      },
+      watch: {
+        chartPlayers() {
+          drawGraphs(this, this.chartPlayers);
+        },
+        chartMinPlayers() {
+          drawGraphs(this, this.chartPlayers);
+        },
+        chartMaxPlayers() {
+          drawGraphs(this, this.chartPlayers);
+        },
+      },
+      methods: {
         totalPoints(player) {
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
         },
@@ -325,21 +395,6 @@
             return;
           }
           this.showOld = true;
-          // sort newest games on top
-          const that = this;
-          games.sort(function (a, b) { return (a.date < b.date) ? 1 : ((b.date < a.date) ? -1 : 0); });
-          games.forEach(function (game) {
-            game.players.sort(function (a, b) { // sort by points (most points is top player)
-              return (a.points < b.points) ? 1 : ((b.points < a.points) ? -1 : 0);
-            });
-            game.players[0]._rowVariant = 'success'; // highlight the winner (= top player after sorting)
-            game.players[1]._rowVariant = 'warning';
-            if (game.players.length > 2) {
-              game.players[2]._rowVariant = 'danger';
-            }
-          });
-          this.oldGames = games;
-          drawGraphs(this);
         }
       }
     })

@@ -1,22 +1,14 @@
-function extractUsedNames(games) {
-    const array = [];
-    games.forEach(game => {
-        game.players.forEach(player => {
-            if (array.indexOf(player.name) === -1) array.push(player.name);
-        });
-    });
-    array.sort();
-    return array;
-}
 
-function drawGraphs(vue) {
-    const playerList = extractUsedNames(vue.oldGames);
-    drawChartJs(document.getElementById("ct-chart-games"), vue.options.board, vue.options.faction, getGameMatrix('games', vue), 'Board+Faction Games');
-    drawChartJs(document.getElementById("ct-chart-points"), vue.options.board, vue.options.faction, getGameMatrix('points', vue), 'Board+Faction Points (last place 0 points, above 1, ...)');
-    drawChartJs(document.getElementById("ct-chart-wins"), vue.options.board, vue.options.faction, getGameMatrix('wins', vue), 'Board+Faction Wins');
-    drawChartJs(document.getElementById("ct-chart-factionGames"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'games', vue), 'Player+Faction Games');
-    drawChartJs(document.getElementById("ct-chart-factionPoints"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'points', vue), 'Player+Faction Points (last place 0 points, above 1, ...)');
-    drawChartJs(document.getElementById("ct-chart-factionWins"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'wins', vue), 'Player+Faction Wins');
+var graphs = [];
+
+function drawGraphs(vue, playerList) {
+    graphs.forEach(g => g.destroy());
+    graphs.push(drawChartJs(document.getElementById("ct-chart-games"), vue.options.board, vue.options.faction, getGameMatrix('games', vue), 'Board+Faction Games'));
+    graphs.push(drawChartJs(document.getElementById("ct-chart-points"), vue.options.board, vue.options.faction, getGameMatrix('points', vue), 'Board+Faction Points (last place 0 points, above 1, ...)'));
+    graphs.push(drawChartJs(document.getElementById("ct-chart-wins"), vue.options.board, vue.options.faction, getGameMatrix('wins', vue), 'Board+Faction Wins'));
+    graphs.push(drawChartJs(document.getElementById("ct-chart-factionGames"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'games', vue), 'Player+Faction Games'));
+    graphs.push(drawChartJs(document.getElementById("ct-chart-factionPoints"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'points', vue), 'Player+Faction Points (last place 0 points, above 1, ...)'));
+    graphs.push(drawChartJs(document.getElementById("ct-chart-factionWins"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'wins', vue), 'Player+Faction Wins'));
 
     //TODO EXPERIEMNTS
     /*var ctx = document.getElementById("ct-chart-experiment");
@@ -201,4 +193,5 @@ function drawChartJs(ctx, labelArray, datasetLabel, data, title) {
             }
         }
     });
+    return myChart;
 }
