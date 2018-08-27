@@ -159,8 +159,12 @@
       </template>
     </b-table>
     <b-button class="my-3" @click="exportAsJson" variant="primary">Export Data</b-button>
-    <b-form-textarea v-if="exportJson !== null" id="exportAsJsonArea" v-model="exportJson" :rows="12">
-    </b-form-textarea>
+    <div v-show="exportJson !== null">
+      <b-form-textarea onfocus="this.select();" id="exportAsJsonArea" ref="exportAsJsonArea" v-model="exportJson"
+        :rows="12">
+      </b-form-textarea>
+      <b-link href="https://github.com/afdia/scores/edit/master/games.js">Edit at GitHub (copy JSON before)</b-link>
+    </div>
     <b-button class="my-3" @click="showOldGames" variant="warning">{{ showOld ? 'Hide' : 'Show'}} old games</b-button>
     <div v-show="showOld">
       <b-form-group v-show="showOld" label="<b>Only show games containing the following players</b>">
@@ -388,6 +392,7 @@
             this.game.triumphParts = [];
           }
           this.exportJson = JSON.stringify(this.game);
+          Vue.nextTick(() => this.$refs.exportAsJsonArea.focus()); // focus at next tick (when exportJson update is finished)
         },
         showOldGames() {
           if (this.showOld == true) {
