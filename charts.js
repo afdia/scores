@@ -12,10 +12,10 @@ function extractUsedNames(games) {
 function drawGraphs(vue) {
     const playerList = extractUsedNames(vue.oldGames);
     drawChartJs(document.getElementById("ct-chart-games"), vue.options.board, vue.options.faction, getGameMatrix('games', vue), 'Board+Faction Games');
-    drawChartJs(document.getElementById("ct-chart-points"), vue.options.board, vue.options.faction, getGameMatrix('points', vue), 'Board+Faction Points (1.=3, 2.=2, 3.=1)');
+    drawChartJs(document.getElementById("ct-chart-points"), vue.options.board, vue.options.faction, getGameMatrix('points', vue), 'Board+Faction Points (last place 0 points, above 1, ...)');
     drawChartJs(document.getElementById("ct-chart-wins"), vue.options.board, vue.options.faction, getGameMatrix('wins', vue), 'Board+Faction Wins');
     drawChartJs(document.getElementById("ct-chart-factionGames"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'games', vue), 'Player+Faction Games');
-    drawChartJs(document.getElementById("ct-chart-factionPoints"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'points', vue), 'Player+Faction Points (1.=3, 2.=2, 3.=1)');
+    drawChartJs(document.getElementById("ct-chart-factionPoints"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'points', vue), 'Player+Faction Points (last place 0 points, above 1, ...)');
     drawChartJs(document.getElementById("ct-chart-factionWins"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'wins', vue), 'Player+Faction Wins');
 
     //TODO EXPERIEMNTS
@@ -70,17 +70,23 @@ function getGameMatrix(type, vue) {
             const winningFactionName = player.faction;
             const factionIdx = vue.options.faction.indexOf(winningFactionName);
             const boardIdx = vue.options.board.indexOf(winningBoardName);
-            let inc = 1;
-            if (type === 'points') {
-                inc = 3 - gamePlayerIdx;
-                if (inc < 0) inc = 0;
-            }
+            const inc = getInc(type, gamePlayerIdx, game.players.length);
             winsByBoardAndFaction[factionIdx][boardIdx] += inc;
             if (type === 'wins') return false;
             else return true;
         });
     });
     return winsByBoardAndFaction;
+}
+
+function getInc(type, gamePlayerIdx, playerCount) {
+    let inc = 1;
+    if (type === 'points') { // in points mode, last place gets 0 points and for every place above you get 1 point
+        inc = playerCount - gamePlayerIdx -1;
+        if (inc < 0)
+            inc = 0;
+    }
+    return inc;
 }
 
 function getPlayerFactionWins(playerList, type, vue) {
@@ -95,11 +101,7 @@ function getPlayerFactionWins(playerList, type, vue) {
             const winningFactionName = player.faction;
             const factionIdx = vue.options.faction.indexOf(winningFactionName);
             const playerIdx = playerList.indexOf(winningPlayerName);
-            let inc = 1;
-            if (type === 'points') {
-                inc = 3 - gamePlayerIdx;
-                if (inc < 0) inc = 0;
-            }
+            const inc = getInc(type, gamePlayerIdx, game.players.length);
             if (playerIdx !== -1) winsByPlayerAndFaction[factionIdx][playerIdx] += inc;
             if (type === 'wins') return false;
             else return true;
@@ -168,16 +170,16 @@ function drawChartJs(ctx, labelArray, datasetLabel, data, title) {
             tooltips: {
                 mode: 'index',
                 callbacks: {
-                    afterTitle: function() {
+                    afterTitle: function () {
                         window.total = 0;
                     },
-                    label: function(tooltipItem, data) {
+                    label: function (tooltipItem, data) {
                         var corporation = data.datasets[tooltipItem.datasetIndex].label;
                         var valor = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
                         window.total += valor;
-                        return corporation + ": " + valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");             
+                        return corporation + ": " + valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
                     },
-                    footer: function() {
+                    footer: function () {
                         return "Total: " + window.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
                     }
                 }
