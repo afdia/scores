@@ -391,7 +391,7 @@
           if (this.game.triumphTrack !== 'Custom') {
             this.game.triumphParts = [];
           }
-          this.exportJson = JSON.stringify(this.game);
+          this.exportJson = JSON.stringify(this.game) + ',';
           Vue.nextTick(() => this.$refs.exportAsJsonArea.focus()); // focus at next tick (when exportJson update is finished)
         },
         showOldGames() {
