@@ -4,6 +4,9 @@
 .leftLabel {
 	width: 6.3em;
 }
+table td {
+	white-space: nowrap;
+}
 /* limit canvas size */
 .chart-container {
 	position: relative;

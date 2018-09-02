@@ -232,12 +232,28 @@
         <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}, <b>Notes:</b> {{game.notes}}
       </template>
       <template slot="edit" slot-scope="row">
-        <b-form-checkbox @click.native.stop @change="row.toggleDetails" v-model="row.detailsShowing">
+        <b-button size="sm" @click.stop="row.toggleDetails" style="padding: 0em 0.5em 0em 0.5em">
           Details
-        </b-form-checkbox>
+        </b-button>
       </template>
       <template slot="row-details" slot-scope="row">
         <b-card>
+          <b-row v-if='isVesnaOrFenris(row.item.faction)' class="py-1">
+            <b-col sm="3" class="text-sm-right"><b>Map Start:</b></b-col>
+            <b-col>{{row.item.mapStart}}</b-col>
+          </b-row>
+          <b-row v-if='isVesna(row.item.faction)' class="py-1">
+            <b-col sm="3" class="text-sm-right"><b>Vesna Mech Mods:</b></b-col>
+            <b-col>{{row.item.vesnaMech}}</b-col>
+          </b-row>
+          <b-row v-if='isNonEmpty(row.item.mechMods)' class="py-1">
+            <b-col sm="3" class="text-sm-right"><b>Mech Mods:</b></b-col>
+            <b-col>{{row.item.mechMods}}</b-col>
+          </b-row>
+          <b-row v-if='isNonEmpty(row.item.infraMods)' class="py-1">
+            <b-col sm="3" class="text-sm-right"><b>Infrastructure Mods:</b></b-col>
+            <b-col>{{row.item.infraMods}}</b-col>
+          </b-row>
           <b-row class="py-1">
             <b-col sm="3" class="text-sm-right"><b>Popularity:</b></b-col>
             <b-col>{{row.item.popularity}}</b-col>
@@ -291,7 +307,7 @@
             name: { sortable: true },
             faction: { sortable: true },
             board: { sortable: true },
-            points: { sortable: true },
+            points: { label: 'Sum', sortable: true },
             edit: {
               label: '',
               'class': 'button-col',
@@ -344,7 +360,7 @@
         });
         // init chart players
         this.chartPlayers = this.usedNames;
-        
+
         this.initTableAndCharts();
       },
       watch: {
@@ -373,7 +389,7 @@
             }
           });
           drawGraphs(this, this.chartPlayers);
-        } ,
+        },
         totalPoints(player) {
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
         },
@@ -382,6 +398,9 @@
         },
         isVesna(faction) {
           return faction === 'Vesna';
+        },
+        isNonEmpty(array) {
+          return array !== undefined && array.length > 0;
         },
         onSubmit(event) {
           event.preventDefault();
