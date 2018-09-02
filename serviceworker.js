@@ -1,37 +1,43 @@
-self.addEventListener('install', function(event) {
-    event.waitUntil(
-      caches.open('v1').then(function(cache) {
-        return cache.addAll([
-          '/scores/',
-          '/scores/charts.js',
-          '/scores/games.js',
-          '/scores/icons-512.png',
-          '/scores/index.html',
-          '/scores/manifest.json',
-          '/scores/style.css',
-        ]);
-      })
-    );
+// service worker info:
+// https://jakearchibald.com/2014/offline-cookbook/#network-falling-back-to-cache
+// https://serviceworke.rs/strategy-cache-and-update_service-worker_doc.html
+self.addEventListener('install', function (evt) {
+  console.log('The service worker is being installed.');
+  evt.waitUntil(precache());
+});
+
+self.addEventListener('fetch', function(evt) {
+  console.log('The service worker is serving the asset.');
+  evt.respondWith(fromCache(evt.request));
+  evt.waitUntil(update(evt.request));
+});
+
+function precache() {
+  return caches.open(CACHE).then(function (cache) {
+    return cache.addAll([
+      '/scores/',
+      '/scores/charts.js',
+      '/scores/games.js',
+      '/scores/icons-512.png',
+      '/scores/index.html',
+      '/scores/manifest.json',
+      '/scores/style.css',
+    ]);
   });
-  
-  self.addEventListener('fetch', function(event) {
-    event.respondWith(caches.match(event.request).then(function(response) {
-      // caches.match() always resolves
-      // but in case of success response will have value
-      if (response !== undefined) {
-        return response;
-      } else {
-        return fetch(event.request).then(function (response) {
-          // response may be used only once
-          // we need to save clone to put one copy in cache
-          // and serve second one
-          let responseClone = response.clone();
-          
-          caches.open('v1').then(function (cache) {
-            cache.put(event.request, responseClone);
-          });
-          return response;
-        });
-      }
-    }));
+}
+
+function fromCache(request) {
+  return caches.open(CACHE).then(function (cache) {
+    return cache.match(request).then(function (matching) {
+      return matching || Promise.reject('no-match');
+    });
   });
+}
+
+function update(request) {
+  return caches.open(CACHE).then(function (cache) {
+    return fetch(request).then(function (response) {
+      return cache.put(request, response);
+    });
+  });
+}
