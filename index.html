@@ -338,14 +338,7 @@
       },
       computed: {
         usedNames() {
-          const array = [];
-          games.forEach(game => {
-            game.players.forEach(player => {
-              if (array.indexOf(player.name) === -1) array.push(player.name);
-            });
-          });
-          array.sort();
-          return array;
+          return this.calcNames(games);
         },
       },
       created() {
@@ -378,6 +371,16 @@
         },
       },
       methods: {
+        calcNames(games) {
+          const array = [];
+          games.forEach(game => {
+            game.players.forEach(player => {
+              if (array.indexOf(player.name) === -1) array.push(player.name);
+            });
+          });
+          array.sort();
+          return array;
+        },
         initTableAndCharts() {
           this.oldGames = [];
           games.forEach(game => {
@@ -391,7 +394,7 @@
               }
             }
           });
-          drawGraphs(this, this.chartPlayers);
+          drawGraphs(this, this.calcNames(this.oldGames)); // in charts only show playernames which have contributed to oldGames (= the visible game tables)
         },
         totalPoints(player) {
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
