@@ -31,6 +31,7 @@
     // Register ServiceWorker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('serviceworker.js').then(function (registration) {
+        console.log('Registered ServiceWorker', err);
       }).catch(function (err) {
         console.log('Cannot register ServiceWorker', err);
       });
@@ -310,28 +311,13 @@
           },
           exportJson: null,
           showOld: false,
+          oldGames: [],
           chartPlayers: [],
           chartMinPlayers: '1',
           chartMaxPlayers: '7',
         }
       },
       computed: {
-        oldGames() {
-          let chartPlayers = this.chartPlayers;
-          let oldGames = [];
-          games.forEach(game => {
-            let add = true;
-            game.players.forEach(player => {
-              if (!chartPlayers.includes(player.name)) add = false;
-            });
-            if (add) {
-              if (game.players.length >= this.chartMinPlayers && game.players.length <= this.chartMaxPlayers) {
-                oldGames.push(game);
-              }
-            }
-          });
-          return oldGames;
-        },
         usedNames() {
           const array = [];
           games.forEach(game => {
@@ -358,19 +344,36 @@
         });
         // init chart players
         this.chartPlayers = this.usedNames;
+        
+        this.initTableAndCharts();
       },
       watch: {
         chartPlayers() {
-          drawGraphs(this, this.chartPlayers);
+          this.initTableAndCharts();
         },
         chartMinPlayers() {
-          drawGraphs(this, this.chartPlayers);
+          this.initTableAndCharts();
         },
         chartMaxPlayers() {
-          drawGraphs(this, this.chartPlayers);
+          this.initTableAndCharts();
         },
       },
       methods: {
+        initTableAndCharts() {
+          this.oldGames = [];
+          games.forEach(game => {
+            let add = true;
+            game.players.forEach(player => {
+              if (!this.chartPlayers.includes(player.name)) add = false;
+            });
+            if (add) {
+              if (game.players.length >= this.chartMinPlayers && game.players.length <= this.chartMaxPlayers) {
+                this.oldGames.push(game);
+              }
+            }
+          });
+          drawGraphs(this, this.chartPlayers);
+        } ,
         totalPoints(player) {
           return Number(player.stars) + Number(player.tiles) + Number(player.resources) + Number(player.buildings) + Number(player.coins);
         },
