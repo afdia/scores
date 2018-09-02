@@ -31,7 +31,7 @@
     // Register ServiceWorker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('serviceworker.js').then(function (registration) {
-        console.log('Registered ServiceWorker', err);
+        console.log('Registered ServiceWorker');
       }).catch(function (err) {
         console.log('Cannot register ServiceWorker', err);
       });
