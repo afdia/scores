@@ -1,3 +1,8 @@
+body{
+	max-width: 1080px;
+	margin: 0 auto !important;
+	float: none !important;
+	}
 .button-col {
 	width: 3em;
 }
@@ -13,7 +18,7 @@ table td {
 .chart-container {
 	position: relative;
 	width: 100vw;
-	max-width: 1100px;
+	max-width: 1080px;
 	height: 50vh;
 	min-height: 500px;
 	position: relative;
