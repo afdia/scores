@@ -1,15 +1,15 @@
 {
-    "short_name": "Scores",
-    "name": "Scores",
+    "short_name": "Scythe Scores",
+    "name": "Scythe Scores",
     "icons": [
       {
-        "src": "./icons-192.png",
+        "src": "./icons-512.png",
         "type": "image/png",
-        "sizes": "48x48 72x72 96x96 128x128 192x192 256x256"
+        "sizes": "48x48 72x72 96x96 128x128 192x192 256x256 512x512"
       }
     ],
     "start_url": ".",
-    "background_color": "#3367D6",
+    "background_color": "#ff7676",
     "display": "standalone",
-    "theme_color": "#3367D6"
+    "theme_color": "#ff7676"
   }

@@ -1,3 +1,4 @@
+'use strict';
 
 var graphs = [];
 
@@ -10,7 +11,7 @@ function drawGraphs(vue, playerList) {
     graphs.push(drawChartJs(document.getElementById("ct-chart-factionPoints"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'points', vue), 'Player+Faction Points (last place 0 points, above 1, ...)'));
     graphs.push(drawChartJs(document.getElementById("ct-chart-factionWins"), playerList, vue.options.faction, getPlayerFactionWins(playerList, 'wins', vue), 'Player+Faction Wins'));
 
-    //TODO EXPERIEMNTS
+    //TODO EXPERIMENTS
     /*var ctx = document.getElementById("ct-chart-experiment");
     var myChart = new Chart(ctx, {
         type: 'bar',

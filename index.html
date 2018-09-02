@@ -1,24 +1,48 @@
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
+  <meta name="Description" content="Scythe Scores">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="theme-color" content="#ff7676" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>Scythe Scores</title>
-  <link rel="stylesheet" type="text/css" href="index.css">
+  <link rel="preload" as="style" href="style.css">
+  <link rel="preload" as="style" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="preload" as="style" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+  <link rel="preload" as="style" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+  <link rel="preload" as="script" href="https://unpkg.com/vue/dist/vue.min.js">
+  <link rel="preload" as="script" href="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js">
+  <link rel="preload" as="script" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js">
+  <link rel="preload" as="script" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js">
+  <link rel="preload" as="script" href="games.js">
+  <link rel="preload" as="script" href="charts.js">
+
   <link rel="manifest" href="manifest.json">
-  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
-  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
-  <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
 </head>
 
 <body class="mx-2">
-  <script src="https://unpkg.com/vue"></script>
+  <script>
+    // Register ServiceWorker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/serviceworker.js').then(function (registration) {
+      }).catch(function (err) {
+        console.log('Cannot register ServiceWorker', err);
+      });
+    }
+  </script>
+  <!--<script src="https://unpkg.com/vue"></script>-->
+  <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
   <script src="https://unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
   <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
-  <script type="text/javascript" src="games.js"></script>
-  <script type="text/javascript" src="charts.js"></script>
+  <script src="games.js"></script>
+  <script src="charts.js"></script>
   <div id="app">
     <h1 style="text-align: center"><a href="https://github.com/afdia/scores">Scythe Scores</a></h1>
     <div>
@@ -160,8 +184,7 @@
     </b-table>
     <b-button class="my-3" @click="exportAsJson" variant="primary">Export Data</b-button>
     <div v-show="exportJson !== null">
-      <b-form-textarea onfocus="this.select();" id="exportAsJsonArea" ref="exportAsJsonArea" v-model="exportJson"
-        :rows="12">
+      <b-form-textarea onfocus="this.select();" id="exportAsJsonArea" ref="exportAsJsonArea" v-model="exportJson" :rows="12">
       </b-form-textarea>
       <b-link href="https://github.com/afdia/scores/edit/master/games.js">Edit at GitHub (copy JSON before)</b-link>
     </div>
