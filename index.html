@@ -244,15 +244,15 @@
           </b-row>
           <b-row v-if='isVesna(row.item.faction)' class="py-1">
             <b-col sm="3" class="text-sm-right"><b>Vesna Mech Mods:</b></b-col>
-            <b-col>{{row.item.vesnaMech}}</b-col>
+            <b-col>{{arrayAsString(row.item.vesnaMech)}}</b-col>
           </b-row>
           <b-row v-if='isNonEmpty(row.item.mechMods)' class="py-1">
             <b-col sm="3" class="text-sm-right"><b>Mech Mods:</b></b-col>
-            <b-col>{{row.item.mechMods}}</b-col>
+            <b-col>{{arrayAsString(row.item.mechMods)}}</b-col>
           </b-row>
           <b-row v-if='isNonEmpty(row.item.infraMods)' class="py-1">
             <b-col sm="3" class="text-sm-right"><b>Infrastructure Mods:</b></b-col>
-            <b-col>{{row.item.infraMods}}</b-col>
+            <b-col>{{arrayAsString(row.item.infraMods)}}</b-col>
           </b-row>
           <b-row class="py-1">
             <b-col sm="3" class="text-sm-right"><b>Popularity:</b></b-col>
@@ -401,6 +401,9 @@
         },
         isNonEmpty(array) {
           return array !== undefined && array.length > 0;
+        },
+        arrayAsString(array) {
+          return array === undefined ? "" : array.join(', ');
         },
         onSubmit(event) {
           event.preventDefault();
