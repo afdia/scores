@@ -6,6 +6,8 @@
 }
 table td {
 	white-space: nowrap;
+	font-size: 0.95em;
+	/*max-width: 4.2em;*/
 }
 /* limit canvas size */
 .chart-container {
