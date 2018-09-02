@@ -1,6 +1,8 @@
 // service worker info:
 // https://jakearchibald.com/2014/offline-cookbook/#network-falling-back-to-cache
 // https://serviceworke.rs/strategy-cache-and-update_service-worker_doc.html
+var CACHE = 'cache-and-update';
+
 self.addEventListener('install', function (evt) {
   console.log('The service worker is being installed.');
   evt.waitUntil(precache());
