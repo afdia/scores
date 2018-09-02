@@ -26,11 +26,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
 </head>
 
-<body class="mx-2">
+<body class="px-2">
   <script>
     // Register ServiceWorker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/serviceworker.js').then(function (registration) {
+      navigator.serviceWorker.register('serviceworker.js').then(function (registration) {
       }).catch(function (err) {
         console.log('Cannot register ServiceWorker', err);
       });
@@ -48,13 +48,13 @@
     <div>
       <b-form @submit="onSubmit">
         <h2>Game</h2>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Date</div>
           </b-input-group-text>
           <b-form-input type="date" v-model="game.date" />
         </b-input-group>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Triumph Track</div>
           </b-input-group-text>
@@ -63,65 +63,65 @@
         <b-form-group v-if='game.triumphTrack === "Custom"'>
           <b-form-checkbox-group id="triumphPartsCheckboxes" v-model="game.triumphParts" :options="options.triumphParts" />
         </b-form-group>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Resolution Tile</div>
           </b-input-group-text>
           <b-form-select v-model="game.resolutionTile" :options="options.resolutionTile" />
         </b-input-group>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Airship (Red)</div>
           </b-input-group-text>
           <b-form-select v-model="game.airshipRed" :options="options.airshipTileRed" />
         </b-input-group>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Airship (Green)</div>
           </b-input-group-text>
           <b-form-select v-model="game.airshipGreen" :options="options.airshipTileGreen" />
         </b-input-group>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Mods</div>
           </b-input-group-text>
           <b-form-select v-model="game.mods" :options="options.mods" />
         </b-input-group>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Notes</div>
           </b-input-group-text>
           <b-form-input v-model="game.notes" />
         </b-input-group>
         <h2>Player</h2>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-dropdown text="Player Name" variant="outline-secondary" slot="prepend">
             <b-dropdown-item @click="form.name = n" v-for="n in usedNames" :key="n">{{n}}</b-dropdown-item>
           </b-dropdown>
           <b-form-input v-model="form.name" required />
         </b-input-group>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Faction</div>
           </b-input-group-text>
           <b-form-select v-model="form.faction" :options="options.faction" required />
         </b-input-group>
-        <b-form-group class="my-2" v-if='isVesna(form.faction)' label="<b>Vesna Mech Mods</b>">
+        <b-form-group class="py-1" v-if='isVesna(form.faction)' label="<b>Vesna Mech Mods</b>">
           <b-form-checkbox-group v-model="form.vesnaMech" :options="options.vesnaMech" />
         </b-form-group>
-        <b-input-group class="my-2" v-if="isVesnaOrFenris(form.faction)">
+        <b-input-group class="py-1" v-if="isVesnaOrFenris(form.faction)">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Faction Start</div>
           </b-input-group-text>
           <b-form-select v-model="form.mapStart" :options="options.mapStart" required />
         </b-input-group>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Board</div>
           </b-input-group-text>
           <b-form-select v-model="form.board" :options="options.board" required />
         </b-input-group>
-        <b-input-group class="my-2">
+        <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
             <div class="leftLabel">Popularity</div>
           </b-input-group-text>
@@ -140,32 +140,32 @@
         <h2>Points</h2>
         <b-form-row>
           <b-col style="flex-grow: initial">
-            <b-input-group class="my-2" prepend="Stars" style="width: 6.7em">
+            <b-input-group class="py-1" prepend="Stars" style="width: 6.7em">
               <b-form-input style="text-align: center" v-model="form.stars" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-input-group class="my-2" prepend="Tiles" style="width: 6.4em">
+            <b-input-group class="py-1" prepend="Tiles" style="width: 6.4em">
               <b-form-input style="text-align: center" v-model="form.tiles" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-input-group class="my-2" prepend="Resources" style="width: 9em">
+            <b-input-group class="py-1" prepend="Resources" style="width: 9em">
               <b-form-input style="text-align: center" v-model="form.resources" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-input-group class="my-2" prepend="Buildings" style="width: 8.5em">
+            <b-input-group class="py-1" prepend="Buildings" style="width: 8.5em">
               <b-form-input style="text-align: center" v-model="form.buildings" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-input-group class="my-2" prepend="Coins" style="width: 7em">
+            <b-input-group class="py-1" prepend="Coins" style="width: 7em">
               <b-form-input style="text-align: center" v-model="form.coins" inputmode="numeric" required />
             </b-input-group>
           </b-col>
           <b-col style="flex-grow: initial">
-            <b-input-group class="my-2" prepend="Sum" style="width: 7em">
+            <b-input-group class="py-1" prepend="Sum" style="width: 7em">
               <b-form-input disabled style="text-align: center" :value="totalPoints(form)" />
             </b-input-group>
           </b-col>
@@ -188,19 +188,19 @@
       </b-form-textarea>
       <b-link href="https://github.com/afdia/scores/edit/master/games.js">Edit at GitHub (copy JSON before)</b-link>
     </div>
-    <b-button class="my-3" @click="showOldGames" variant="warning">{{ showOld ? 'Hide' : 'Show'}} old games</b-button>
+    <b-button @click="showOldGames" variant="warning">{{ showOld ? 'Hide' : 'Show'}} old games</b-button>
     <div v-show="showOld">
       <b-form-group v-show="showOld" label="<b>Only show games containing the following players</b>">
         <b-form-checkbox-group v-model="chartPlayers" :options="usedNames" />
       </b-form-group>
       <b-form-row>
         <b-col style="flex-grow: initial">
-          <b-input-group class="my-2" prepend="Min Players" style="width: 9em">
+          <b-input-group class="py-1" prepend="Min Players" style="width: 9em">
             <b-form-input v-model="chartMinPlayers" inputmode="numeric" />
           </b-input-group>
         </b-col>
         <b-col style="flex-grow: initial">
-          <b-input-group class="my-2" prepend="Max Players" style="width: 9em">
+          <b-input-group class="py-1" prepend="Max Players" style="width: 9em">
             <b-form-input v-model="chartMaxPlayers" inputmode="numeric" />
           </b-input-group>
         </b-col>
@@ -225,7 +225,7 @@
         <canvas id="ct-chart-factionWins"></canvas>
       </div>
     </div>
-    <b-table v-for="game in oldGames" v-if="showOld" class="mt-5" striped hover small caption-top :items="game.players" :fields="fields">
+    <b-table v-for="game in oldGames" v-if="showOld" striped hover small caption-top :items="game.players" :fields="fields">
       <template slot="table-caption">
         <b>Date:</b> {{game.date}}, <b>Track:</b> {{game.triumphTrack}}, <b>Resolution:</b> {{game.resolutionTile}},
         <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}, <b>Notes:</b> {{game.notes}}
@@ -237,11 +237,11 @@
       </template>
       <template slot="row-details" slot-scope="row">
         <b-card>
-          <b-row class="mb-2">
+          <b-row class="py-1">
             <b-col sm="3" class="text-sm-right"><b>Popularity:</b></b-col>
             <b-col>{{row.item.popularity}}</b-col>
           </b-row>
-          <b-row class="mb-2">
+          <b-row class="py-1">
             <b-col sm="3" class="text-sm-right"><b>Points:</b></b-col>
             <b-col>Stars={{row.item.stars}} Tiles={{row.item.tiles}} Resources={{row.item.resources}} Buildings={{row.item.buildings}}
               Coins={{row.item.coins}}
