@@ -39,6 +39,7 @@ function fromCache(request) {
 function update(request) {
   return caches.open(CACHE).then(function (cache) {
     return fetch(request).then(function (response) {
+      console.log('Updated assets from network');
       return cache.put(request, response);
     });
   });
