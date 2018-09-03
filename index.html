@@ -45,7 +45,8 @@
   <script src="games.js"></script>
   <script src="charts.js"></script>
   <div id="app">
-    <h1 style="text-align: center; background: red; padding-bottom: 0.2em"><a style="color: black" href="https://github.com/afdia/scores">Scythe ★ Scores</a></h1>
+    <h1 style="text-align: center; background: red; padding-bottom: 0.2em"><a style="color: black" href="https://github.com/afdia/scores">Scythe
+        ★ Scores</a></h1>
     <div>
       <b-form @submit="onSubmit">
         <h2>Game</h2>
@@ -83,10 +84,8 @@
           <b-form-select v-model="game.airshipGreen" :options="options.airshipTileGreen" />
         </b-input-group>
         <b-input-group class="py-1">
-          <b-input-group-text slot="prepend">
-            <div class="leftLabel">Mods</div>
-          </b-input-group-text>
-          <b-form-select v-model="game.mods" :options="options.mods" />
+          <b-form-checkbox-group v-model="game.mods" :options="options.mods">
+          </b-form-checkbox-group>
         </b-input-group>
         <b-input-group class="py-1">
           <b-input-group-text slot="prepend">
@@ -128,16 +127,22 @@
           </b-input-group-text>
           <b-form-select v-model="form.popularity" :options="options.popularity" required />
         </b-input-group>
-        <div v-if='game.mods.includes("Mech")'>
+        <div v-if='game.mods.includes("Mech Mods")'>
           <b-form-group label="<b>Mech Mods</b>">
             <b-form-checkbox-group v-model="form.mechMods" :options="options.mechMods" />
           </b-form-group>
         </div>
-        <div v-if='game.mods.includes("Infrastructure")'>
+        <div v-if='game.mods.includes("Infrastructure Mods")'>
           <b-form-group label="<b>Infrastructure Mods</b>">
             <b-form-checkbox-group v-model="form.infraMods" :options="options.infraMods" />
           </b-form-group>
         </div>
+        <b-input-group v-if='game.mods.includes("Alliances")' class="py-1">
+          <b-input-group-text slot="prepend">
+            <div class="leftLabel">Alliance</div>
+          </b-input-group-text>
+          <b-form-select v-model="form.alliance" :options="options.faction" />
+        </b-input-group>
         <h2>Points</h2>
         <b-form-row>
           <b-col style="flex-grow: initial">
@@ -276,13 +281,14 @@
       data() {
         return {
           form: {
-            name: null,
+            name: "",
             faction: "",
             vesnaMech: [],
             mapStart: "",
             board: "",
             mechMods: [],
             infraMods: [],
+            alliance: "",
             popularity: "Medium",
             stars: "",
             tiles: "",
@@ -300,7 +306,7 @@
             resolutionTile: ['None', '1 Land Rush', '2 Factory Explosion', '3 Spoils of War', '4 King of the Hill', '5 Deja Vu', '6 Mission Possible', '7 Doomsday Clock', '8 Backup Plan'],
             airshipTileRed: ['None', '1 Bombard', '2 Bounty', '3 Siege Engine', '4 Distract', '5 Espionage', '6 Blitzkrieg', '7 Toll', '8 War Correspondent'],
             airshipTileGreen: ['None', '9 Ferry', '10 Boost', '11 Drill', '12 Hero', '13 Safe Haven', '14 Reap', '15 Craft', '16 Negotiate'],
-            mods: ['None', 'Mech', 'Infrastructure', 'Mech + Infrastructure'],
+            mods: ['Mech Mods', 'Infrastructure Mods', 'Alliances', 'Rivals', 'Tesla', 'Mad Tesla', 'Desolation'],
             infraMods: ['Assembly Line', 'Automachines', 'Cavalry', 'Construction', 'Machinery', 'Propaganda', 'Recruitment Office', 'Spy'],
             mechMods: ['Armor', 'Artillery', 'Camaraderie', 'Entrenched', 'Feint', 'Foothold', 'Pontoons', 'Regroup', 'Reinforce', 'Scout', 'Stealth', 'Suiton', 'Sword', 'Tactics', 'Township', 'Underpass'],
             popularity: ['Min', 'Medium', 'Max'],
@@ -324,7 +330,7 @@
             resolutionTile: 'None',
             airshipRed: 'None',
             airshipGreen: 'None',
-            mods: 'None',
+            mods: [],
             notes: '',
             players: [],
           },
@@ -419,6 +425,9 @@
           let objCopy = Object.assign({}, this.form);
           if (!this.isVesna(objCopy.faction)) {
             objCopy.vesnaMech = undefined;
+          }
+          if (!this.game.mods.includes("Alliances")) {
+            objCopy.alliance = undefined;
           }
           objCopy.points = this.totalPoints(objCopy);
           let index = -1;
