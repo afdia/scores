@@ -183,7 +183,12 @@ function drawChartJs(ctx, labelArray, datasetLabel, data, title) {
                 text: title
             },
             scales: {
-                xAxes: [{ stacked: true }],
+                xAxes: [{
+                    stacked: true,
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
                 yAxes: [{
                     stacked: true,
                     ticks: {
