@@ -22,6 +22,8 @@ function precache() {
       '/scores/games.js',
       '/scores/icons-512.png',
       '/scores/index.html',
+      '/scores/timer.html',
+      '/scores/scythe.html',
       '/scores/manifest.json',
       '/scores/style.css',
     ]);
