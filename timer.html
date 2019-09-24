@@ -1,0 +1,49 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<style>
+  body {
+    font-family: sans-serif;
+    background-color: black;
+    color: white;
+    font-size: 10em;
+  }
+  button {
+    background-color: white; /* Green */
+    border: none;
+  }
+  .material-icons {
+    font-size: 10em;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/easytimer.js@4.0.1/dist/easytimer.min.js"></script>
+<div id="timer">00:00:00</div>
+<div id="sum">0</div>
+<button class="startPauseButton"><i class="material-icons">pause</i></button>
+<button class="nextButton"><i class="material-icons">skip_next</i></button>
+<script>
+  // https://albert-gonzalez.github.io/easytimer.js/
+  var timer = new easytimer.Timer();
+  timer.start();
+  let thisCount = 0;
+  let paused = false;
+  timer.addEventListener("secondsUpdated", function(e) {
+    document.querySelector("#timer").innerHTML = timer.getTimeValues().toString();
+    thisCount = timer.getTotalTimeValues().seconds;
+  });
+  document.querySelector(".startPauseButton").addEventListener("click", function() {
+    if (paused) {
+      timer.start();
+      document.querySelector(".startPauseButton .material-icons").innerHTML = "pause";
+    } else {
+      timer.pause();
+      document.querySelector(".startPauseButton .material-icons").innerHTML = "play_arrow";
+    }
+    paused = !paused;
+    document.querySelector(".nextButton").disabled = paused;
+  });
+  document.querySelector(".nextButton").addEventListener("click", function() {
+    timer.reset(); // reset restarted sofort
+    let sum = document.querySelector("#sum");
+    sum.innerHTML = +sum.innerHTML + thisCount;
+    document.querySelector("#timer").innerHTML = "00:00:00";
+  });
+</script>
