@@ -4,4 +4,14 @@
 <body>
   <p><a href="timer.html">Timer</a></p>
   <p><a href="scythe.html">Scythe Scores</a></p>
+  <script>
+    // Register ServiceWorker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('serviceworker.js').then(function (registration) {
+        console.log('Registered ServiceWorker');
+      }).catch(function (err) {
+        console.log('Cannot register ServiceWorker', err);
+      });
+    }
+  </script>
 </body>
