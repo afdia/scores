@@ -1,48 +1,17 @@
-// service worker info:
-// https://jakearchibald.com/2014/offline-cookbook/#network-falling-back-to-cache
-// https://serviceworke.rs/strategy-cache-and-update_service-worker_doc.html
-var CACHE = 'cache-and-update';
+// use Workbox-SW to cache resources (see https://stackoverflow.com/questions/46830493/is-there-any-way-to-cache-all-files-of-defined-folder-path-in-service-worker/46891749#46891749)
+// I use Stale-while-revalidate to get updates e.g. for images in background while still using the cached img at the moment (see https://developers.google.com/web/tools/workbox/modules/workbox-strategies)
+importScripts('https://unpkg.com/workbox-sw@0.0.2/build/importScripts/workbox-sw.dev.v0.0.2.js');
+importScripts('https://unpkg.com/workbox-runtime-caching@1.3.0/build/importScripts/workbox-runtime-caching.prod.v1.3.0.js');
+importScripts('https://unpkg.com/workbox-routing@1.3.0/build/importScripts/workbox-routing.prod.v1.3.0.js');
 
-self.addEventListener('install', function (evt) {
-  console.log('The service worker is being installed.');
-  evt.waitUntil(precache());
+const assetRoute = new workbox.routing.RegExpRoute({
+    regExp: new RegExp('^https://afdia.github.io/scores/*'),
+    handler: new workbox.runtimeCaching.StaleWhileRevalidate()
 });
 
-self.addEventListener('fetch', function(evt) {
-  console.log('The service worker is serving the asset.');
-  evt.respondWith(fromCache(evt.request));
-  evt.waitUntil(update(evt.request));
+const router = new workbox.routing.Router();
+//router.addFetchListener();
+router.registerRoutes({routes: [assetRoute]});
+router.setDefaultHandler({
+    handler: new workbox.runtimeCaching.StaleWhileRevalidate()
 });
-
-function precache() {
-  return caches.open(CACHE).then(function (cache) {
-    return cache.addAll([
-      '/scores/',
-      '/scores/charts.js',
-      '/scores/games.js',
-      '/scores/icons-512.png',
-      '/scores/index.html',
-      '/scores/timer.html',
-      '/scores/scythe.html',
-      '/scores/manifest.json',
-      '/scores/style.css',
-    ]);
-  });
-}
-
-function fromCache(request) {
-  return caches.open(CACHE).then(function (cache) {
-    return cache.match(request).then(function (matching) {
-      return matching || Promise.reject('no-match');
-    });
-  });
-}
-
-function update(request) {
-  return caches.open(CACHE).then(function (cache) {
-    return fetch(request).then(function (response) {
-      console.log('Updated assets from network');
-      return cache.put(request, response);
-    });
-  });
-}

@@ -7,11 +7,13 @@
   <script>
     // Register ServiceWorker
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('serviceworker.js').then(function (registration) {
-        console.log('Registered ServiceWorker');
-      }).catch(function (err) {
-        console.log('Cannot register ServiceWorker', err);
-      });
+      window.addEventListener('load', function() { // register after window load (https://developers.google.com/web/tools/workbox/guides/service-worker-checklist)
+        navigator.serviceWorker.register('serviceworker.js').then(function (registration) {
+          console.log('Registered ServiceWorker');
+        }).catch(function (err) {
+          console.log('Cannot register ServiceWorker', err);
+        });
+      }
     }
   </script>
 </body>
