@@ -1,19 +1,20 @@
 <head>
   <link rel="manifest" href="manifest.json">
 </head>
-<body onload=window.location='scythe.html'> <!-- as long as timer is not finished just redirect to scythe -->
+
+<body>
   <p><a href="timer.html">Timer</a></p>
   <p><a href="scythe.html">Scythe Scores</a></p>
   <script>
     // Register ServiceWorker
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() { // register after window load (https://developers.google.com/web/tools/workbox/guides/service-worker-checklist)
+      window.addEventListener('load', function () { // register after window load (https://developers.google.com/web/tools/workbox/guides/service-worker-checklist)
         navigator.serviceWorker.register('serviceworker.js').then(function (registration) {
           console.log('Registered ServiceWorker');
         }).catch(function (err) {
           console.log('Cannot register ServiceWorker', err);
         });
-      }
+      });
     }
   </script>
 </body>
