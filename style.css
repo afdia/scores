@@ -25,3 +25,9 @@ table td {
 	left: 50%;
 	transform: translateX(-50%);
 }
+.col-form-label {
+	font-weight: bold;
+}
+[type="checkbox"] {
+	margin-right: 0.3em;
+}
