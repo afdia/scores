@@ -175,7 +175,7 @@
       </template>
       <template slot="table-caption">
         <b>Date:</b> {{game.date}}, <b>Track:</b> {{game.triumphTrack}}, <b>Resolution:</b> {{game.resolutionTile}},
-        <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}, <b>Notes:</b> {{game.notes}}
+        <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}, <b>Modular Board:</b> {{game.mods !== undefined && game.mods.includes("Modular Board")}}, <b>Notes:</b> {{game.notes}}
       </template>
     </b-table>
     <b-button class="my-3" @click="exportAsJson" variant="primary">Export Data</b-button>
@@ -226,7 +226,7 @@
         <div style="font-size: 0.95em">
           <b>Date:</b> {{game.date}}, <b>Track:</b> {{game.triumphTrack}}, <b>Resolution:</b>
           {{game.resolutionTile}},
-          <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}, <b>Notes:</b> {{game.notes}}
+          <b>Airship:</b> {{game.airshipRed}}/{{game.airshipGreen}}, <b>Modular Board:</b> {{game.mods !== undefined && game.mods.includes("Modular Board")}}, <b>Notes:</b> {{game.notes}}
         </div>
       </template>
       <template slot="edit" slot-scope="row">
@@ -296,7 +296,7 @@
             resolutionTile: ['None', '1 Land Rush', '2 Factory Explosion', '3 Spoils of War', '4 King of the Hill', '5 Deja Vu', '6 Mission Possible', '7 Doomsday Clock', '8 Backup Plan'],
             airshipTileRed: ['None', '1 Bombard', '2 Bounty', '3 Siege Engine', '4 Distract', '5 Espionage', '6 Blitzkrieg', '7 Toll', '8 War Correspondent'],
             airshipTileGreen: ['None', '9 Ferry', '10 Boost', '11 Drill', '12 Hero', '13 Safe Haven', '14 Reap', '15 Craft', '16 Negotiate'],
-            mods: ['Mech Mods', 'Infrastructure Mods', 'Alliances', 'Rivals', 'Tesla', 'Mad Tesla', 'Desolation'],
+            mods: ['Modular Board', 'Mech Mods', 'Infrastructure Mods', 'Alliances', 'Rivals', 'Tesla', 'Mad Tesla', 'Desolation'],
             infraMods: ['Assembly Line', 'Automachines', 'Cavalry', 'Construction', 'Machinery', 'Propaganda', 'Recruitment Office', 'Spy'],
             mechMods: ['Armor', 'Artillery', 'Camaraderie', 'Entrenched', 'Feint', 'Foothold', 'Pontoons', 'Regroup', 'Reinforce', 'Scout', 'Stealth', 'Suiton', 'Sword', 'Tactics', 'Township', 'Underpass'],
             popularity: ['Min', 'Medium', 'Max'],
@@ -405,7 +405,7 @@
           return array !== undefined && array.length > 0;
         },
         arrayAsString(array) {
-          return array === undefined ? "" : array.join(', ');
+          return (array === undefined || array.length === 0) ? "" : array.join(', ');
         },
         onSubmit(event) {
           event.preventDefault();
